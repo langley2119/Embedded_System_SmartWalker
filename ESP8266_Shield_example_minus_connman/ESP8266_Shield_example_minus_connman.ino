@@ -28,27 +28,10 @@
   Change WiFi ssid, pass, and Blynk auth token to run :)
   Feel free to apply it to any other example. It's simple!
  *************************************************************/
-
-/* Comment this out to disable prints and save space */
-#define BLYNK_PRINT Serial
-#define DEBUG Serial 
-
-#define STATE_MACH_INTERVAL 100L
-
-//#include <queue.h>
-//#include <ESP8266WiFi.h>
-
-#include <ESP8266_Lib.h>
-#include <BlynkSimpleShieldEsp8266.h>
+#include "definitions.h" 
 
 // define pinouts, define interrupts
 
-// for the wifi manager
-
-
-//#include <WiFiManager.h> // Wifi configuration manager used thanks to tazpu
-//#include <DNSServer.h>
-//#include <ESP8266WebServer.h>
 
 
 // You should get Auth Token in the Blynk App.
@@ -66,60 +49,8 @@ BlynkTimer StateTimer;
 char ssid[] = "iPhone";
 char pass[] = "morecoffee";
 
-// Hardware Serial on Mega, Leonardo, Micro...
-#define EspSerial Serial1
-
-// or Software Serial on Uno, Nano...
-//#include <SoftwareSerial.h>
-//SoftwareSerial EspSerial(10, 11); // RX, TX
-
-// Your ESP8266 baud rate:
-#define ESP8266_BAUD 9600
 
 ESP8266 wifi(&EspSerial);
-
-enum State{waiting, iAmHere, gentleReminder, strongReminder, thankYou, inUse}; 
-enum State current_state;
-enum State next_state; 
-// globals for the stae
-
-
-
-void StateMachine()
-{ 
-  static int counter = 0; 
-  static unsigned long time_elapsed = 0; 
-  counter = counter + 1;
-  time_elapsed = counter * STATE_MACH_INTERVAL;  
-
-  switch(current_state) {
-    case waiting: 
-        next_state = WaitingState(time_elapsed,&counter); 
-      break; 
-    case iAmHere: 
-        next_state = IAmHereState(time_elapsed,&counter); 
-      break; 
-    case gentleReminder: 
-        next_state = GentleReminderState(time_elapsed,&counter); 
-      break;
-    case strongReminder:
-        next_state = StrongReminderState(time_elapsed,&counter); 
-      break; 
-    case thankYou: 
-        next_state = ThankYouState(time_elapsed,&counter); 
-      break;
-    case inUse:
-        next_state = InUseState(time_elapsed,&counter);
-      break;
-    default: 
-        DEBUG.println("Error occured in the state diagram."); 
-      break;     
-  }
-
-   
-  //Blynk.virtualWrite(V5, (millis()/1000) % 10); 
-}
-
 
 void setup()
 {
@@ -144,16 +75,30 @@ void setup()
   // setting up the auto connnect using WiFiManager Library
   //wifiManager.setConfigPortalTimeout(180); // waits 3 minutes and then will shut off. 
   //wifiManager.autoConnect("RemindME Walker","remindme"); 
-  
+
+
+  SetupRTCandSD();   
   SetupSensors(); 
+  SetupButtonInterrupts(); 
   //Blynk.begin(auth, wifi, ssid, pass);
 
+  DEBUG.println("Setup Complete!"); 
 }
 
 void loop()
 {
   //Blynk.run();
   StateTimer.run(); 
+  if (rtc.updateTime() == false) //Updates the time variables from RTC
+  {
+    Serial.print("RTC failed to update");
+  }
+  // periodically checking 
+  if (!digitalRead(cardDetect))
+  {
+    initializeCard();
+  }
+
 }
 
 

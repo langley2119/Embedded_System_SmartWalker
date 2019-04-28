@@ -1,12 +1,25 @@
-#include <SparkFun_RFD77402_Arduino_Library.h> //Use Library Manager or download here: https://github.com/sparkfun/SparkFun_RFD77402_Arduino_Library
-#include <Wire.h>
-#define PIR_DOUT 5  // PIR digital output on D2
+#include "definitions.h" 
 
-RFD77402 myDistance_upper; // hook object to library for upper sensor
+int SetupButtonInterrupts(){
+  pinMode(LEFT_HANDLE_BUTTON, INPUT); // need to configure for button interrupt
+  pinMode(RIGHT_HANDLE_BUTTON, INPUT); 
+  attachInterrupt(digitalPinToInterrupt(LEFT_HANDLE_BUTTON), GoToThankYou, RISING);
+  attachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON), GoToThankYou, RISING);
+  return 0; 
+}
+
+int EnableButtonInterrupts(){
+  attachInterrupt(digitalPinToInterrupt(LEFT_HANDLE_BUTTON), GoToThankYou, RISING);
+  attachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON), GoToThankYou, RISING);
+}
+
+int DisableButtonInterrupts(){
+  detachInterrupt(digitalPinToInterrupt(LEFT_HANDLE_BUTTON)); 
+  detachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON));
+}
+
 
 int SetupSensors() {
-  //int interruptButtonLeft = 2; // for the pushbutton interrupt
-  //int interruptButtonRight = 3;
 
   // for lowerSensor 
   pinMode(PIR_DOUT,INPUT); 
