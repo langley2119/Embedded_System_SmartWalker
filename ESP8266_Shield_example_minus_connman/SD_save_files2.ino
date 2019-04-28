@@ -101,6 +101,7 @@ void loop()
 
 void initializeCard(void)
 {
+  static int tries = 1; 
   Serial.print(F("Initializing SD card..."));
 
   // Is there even a card?
@@ -116,14 +117,21 @@ void initializeCard(void)
   if (!SD.begin(chipSelect) && !alreadyBegan)  // begin uses half-speed...
   {
     Serial.println(F("Initialization failed!"));
-    initializeCard(); // Possible infinite retry loop is as valid as anything
+    if(tries <= 10){
+      initializeCard(); // Possible infinite retry loop is as valid as anything
+      tries++; 
+    }
+    else {
+      Serial.println(F("Giving up on using SD")); 
+    }
   }
   else
   {
     alreadyBegan = true;
+    tries = 1; // success! reset tries
   }
   Serial.println(F("Initialization done."));
-
+    
   Serial.print(fileName);
   if (SD.exists(fileName))
   {
@@ -219,34 +227,6 @@ void printDateAndTime(void)
     fd.print(currentDate);
     fd.print(F(" at "));
     fd.println(currentTime);
-    fd.print(F("Month: "));
-    //fd.print(currentMonth);
-    //fd.print(month);
-    fd.print(monthName);
-    fd.print(F("  Day: "));
-    //fd.print(currentDay);
-    fd.print(day);
-    fd.print(F("  Year: "));
-    //fd.println(currentYear);
-    fd.print(century);
-    fd.println(year);
-    fd.print(F("The day of week is: "));
-    fd.print(dayName);
-    fd.print(F(" The first day of the year was a: "));
-    //fd.print(firstOfYear);
-    fd.print(firstDay);
-    if(leapYear == 0)
-    {
-      fd.println(F(" It is a leap year"));
-    }
-    else
-    {
-      fd.println(F(" It is not a leap year"));
-    }
-    fd.print(F("Day of Year: "));
-    fd.print(dayOfYear);
-    fd.print(F(" Week of Year: "));
-    fd.println(weekNumber);
     fd.println();
     fd.flush();
     index = 0;
@@ -474,5 +454,95 @@ void calculateWeekday(int dayOfWeek, int firstOfYear)
       firstDay = "Saturday";
       break;
     }
+  }
+}
+
+void printDateAndTimeVerbose(void)
+{
+  String currentDate = rtc.stringDateUSA(); //Get the current date in mm/dd/yyyy format (we're weird)
+  //String currentDate = rtc.stringDate()); //Get the current date in dd/mm/yyyy format
+  String currentTime = rtc.stringTime(); //Get the time
+  //currentDate.toCharArray(curDate,str_len);
+
+  previousDay = day;
+  
+  currentMonth = currentDate.substring(0,2);
+  currentDay = currentDate.substring(3,5);
+  currentCentury = currentDate.substring(6,8);
+  currentYear = currentDate.substring(8,10);
+  
+  currentMonth.toCharArray(curMon,str_len);
+  currentDay.toCharArray(curDay,str_len);
+  currentYear.toCharArray(curYear,str_len);
+  currentCentury.toCharArray(curCent,str_len);
+
+  month = atoi(curMon);
+  day = atoi(curDay);
+  year = atoi(curYear);
+  century = atoi(curCent);
+
+//  Use these to test random dates for debugging
+//  month = 04;
+//  day = 27;
+//  century = 20;
+//  year = 19;
+
+  calculateDayOfYear(month,day,year,century);
+  
+  calculateWeekday(dayOfWeek,firstOfYear);
+
+  previousWeek = currentWeek;
+  currentWeek = weekNumber;
+  if(currentWeek != previousWeek)
+  {
+    sprintf(fileName, "%dweek%d.txt", year, weekNumber);
+  }
+
+  
+  fd = SD.open(fileName, FILE_WRITE);
+  if (fd) 
+  {
+    if(previousDay != day)
+    {
+      fd.print(dayName);
+      fd.println(":");
+    }
+    fd.print(F("  The chair was used on "));
+    fd.print(currentDate);
+    fd.print(F(" at "));
+    fd.println(currentTime);
+// this is what is added in the verbose
+    fd.print(F("Month: "));
+    //fd.print(currentMonth);
+    //fd.print(month);
+    fd.print(monthName);
+    fd.print(F("  Day: "));
+    //fd.print(currentDay);
+    fd.print(day);
+    fd.print(F("  Year: "));
+    //fd.println(currentYear);
+    fd.print(century);
+    fd.println(year);
+    fd.print(F("The day of week is: "));
+    fd.print(dayName);
+    fd.print(F(" The first day of the year was a: "));
+    //fd.print(firstOfYear);
+    fd.print(firstDay);
+    if(leapYear == 0)
+    {
+      fd.println(F(" It is a leap year"));
+    }
+    else
+    {
+      fd.println(F(" It is not a leap year"));
+    }
+    fd.print(F("Day of Year: "));
+    fd.print(dayOfYear);
+    fd.print(F(" Week of Year: "));
+    fd.println(weekNumber);
+    fd.println();
+    fd.flush();
+    index = 0;
+    fd.close();
   }
 }

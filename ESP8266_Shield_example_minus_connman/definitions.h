@@ -44,7 +44,7 @@
 
 // used in Sensor Functions
 #define LEFT_HANDLE_BUTTON 2
-//#define RIGHT_HANDLE_BUTTON 3
+#define RIGHT_HANDLE_BUTTON 3
 
 
 #define PIR_DOUT 6  // PIR digital output on D2
@@ -86,6 +86,6 @@ RFD77402 myDistance_upper; // hook object to library for upper sensor
 /****************** GLOBALS **********************/ 
 enum State{waiting, iAmHere, gentleReminder, strongReminder, thankYou, inUse}; 
 enum State current_state;
-enum State next_state;
+enum State volatile next_state; // so that it can be changed in the interrupt callbacks
 
 #endif // SMART_WALKER_DEF_H

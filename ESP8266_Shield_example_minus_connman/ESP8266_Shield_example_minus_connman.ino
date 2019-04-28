@@ -94,11 +94,14 @@ void loop()
     Serial.print("RTC failed to update");
   }
   // periodically checking 
-  if (!digitalRead(cardDetect))
+  // currently disabled to prevent the SD card from preventing other operation of the device.
+   
+  // FIXME: maybe add a parameter that enables easier checking and initialization if possible
+  /*if (!digitalRead(cardDetect))
   {
     initializeCard();
-  }
-
+  }*/
+  
 }
 
 
