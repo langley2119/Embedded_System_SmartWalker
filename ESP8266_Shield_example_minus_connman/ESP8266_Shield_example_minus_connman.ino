@@ -31,12 +31,17 @@
 
 /* Comment this out to disable prints and save space */
 #define BLYNK_PRINT Serial
+#define DEBUG Serial 
+
+#define STATE_MACH_INTERVAL 100L
 
 //#include <queue.h>
 //#include <ESP8266WiFi.h>
 
 #include <ESP8266_Lib.h>
 #include <BlynkSimpleShieldEsp8266.h>
+
+// define pinouts, define interrupts
 
 // for the wifi manager
 
@@ -51,7 +56,7 @@
 char auth[] = "a2f791ce584c4b91a59bdc40e6e9b4d9";
 
 // including the timer necessary instead of delays (so that blink can still run compatibly) 
-BlynkTimer timer; 
+BlynkTimer StateTimer; 
 
 // adding the wifi Manager
 //WifiManager wifiManager; 
@@ -73,9 +78,46 @@ char pass[] = "morecoffee";
 
 ESP8266 wifi(&EspSerial);
 
-void myTimerEvent()
+enum State{waiting, iAmHere, gentleReminder, strongReminder, thankYou, inUse}; 
+enum State current_state;
+enum State next_state; 
+// globals for the stae
+
+
+
+void StateMachine()
 { 
-  Blynk.virtualWrite(V5, (millis()/1000) % 10); 
+  static int counter = 0; 
+  static unsigned long time_elapsed = 0; 
+  counter = counter + 1;
+  time_elapsed = counter * STATE_MACH_INTERVAL;  
+
+  switch(current_state) {
+    case waiting: 
+        next_state = WaitingState(time_elapsed,&counter); 
+      break; 
+    case iAmHere: 
+        next_state = IAmHereState(time_elapsed,&counter); 
+      break; 
+    case gentleReminder: 
+        next_state = GentleReminderState(time_elapsed,&counter); 
+      break;
+    case strongReminder:
+        next_state = StrongReminderState(time_elapsed,&counter); 
+      break; 
+    case thankYou: 
+        next_state = ThankYouState(time_elapsed,&counter); 
+      break;
+    case inUse:
+        next_state = InUseState(time_elapsed,&counter);
+      break;
+    default: 
+        DEBUG.println("Error occured in the state diagram."); 
+      break;     
+  }
+
+   
+  //Blynk.virtualWrite(V5, (millis()/1000) % 10); 
 }
 
 
@@ -94,7 +136,7 @@ void setup()
   // first argument is the duration between events in milliseconds 
   // up to 16 timers per timer object. 
   // max data sending rate of 10 values per second
-  timer.setInterval(1000L,myTimerEvent); 
+  StateTimer.setInterval(STATE_MACH_INTERVAL,StateMachine); 
 
   // WIFI Manager Attempts 
   // one-time thing: 
@@ -103,13 +145,15 @@ void setup()
   //wifiManager.setConfigPortalTimeout(180); // waits 3 minutes and then will shut off. 
   //wifiManager.autoConnect("RemindME Walker","remindme"); 
   
-  Blynk.begin(auth, wifi, ssid, pass);
+  SetupSensors(); 
+  //Blynk.begin(auth, wifi, ssid, pass);
+
 }
 
 void loop()
 {
-  Blynk.run();
-  timer.run(); 
+  //Blynk.run();
+  StateTimer.run(); 
 }
 
 
