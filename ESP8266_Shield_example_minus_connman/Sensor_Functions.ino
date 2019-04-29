@@ -49,11 +49,12 @@ int UpperSensorTakeMeasurement() {
   int distance; 
   myDistance_upper.takeMeasurement(); 
   distance = myDistance_upper.getDistance(); 
+  //DEBUG.println(distance); 
   // distance returned on a scale of 0 to 2047
   if(distance < 1000) {
     return 2;   
   }
-  else if(distance < 2000) {
+  else if(distance < 1750) {
     return 1; 
   }
   else {

@@ -39,7 +39,7 @@
 char auth[] = "a2f791ce584c4b91a59bdc40e6e9b4d9";
 
 // including the timer necessary instead of delays (so that blink can still run compatibly) 
-BlynkTimer StateTimer; 
+BlynkTimer timer; 
 
 // adding the wifi Manager
 //WifiManager wifiManager; 
@@ -67,7 +67,7 @@ void setup()
   // first argument is the duration between events in milliseconds 
   // up to 16 timers per timer object. 
   // max data sending rate of 10 values per second
-  StateTimer.setInterval(STATE_MACH_INTERVAL,StateMachine); 
+  timer.setInterval(STATE_MACH_INTERVAL,StateMachine); 
 
   // WIFI Manager Attempts 
   // one-time thing: 
@@ -88,7 +88,7 @@ void setup()
 void loop()
 {
   //Blynk.run();
-  StateTimer.run(); 
+  timer.run(); 
   if (rtc.updateTime() == false) //Updates the time variables from RTC
   {
     Serial.print("RTC failed to update");
@@ -103,7 +103,3 @@ void loop()
   }*/
   
 }
-
-
-
-

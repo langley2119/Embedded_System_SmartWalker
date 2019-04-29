@@ -11,6 +11,10 @@
 #include <ESP8266_Lib.h>
 #include <BlynkSimpleShieldEsp8266.h>
 
+// LEDS
+
+#include <lp55231.h>
+
 
 // for the wifi manager
 //#include <WiFiManager.h> // Wifi configuration manager used thanks to tazpu
@@ -67,6 +71,10 @@ const uint8_t cardDetect = 9;
 // module stuff
 RV1805 rtc;
 File fd;
+
+// LEDS
+static Lp55231 ledChip(0x32);
+static Lp55231 ledChip2(0x33);
 
 RFD77402 myDistance_upper; // hook object to library for upper sensor
 
