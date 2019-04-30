@@ -93,19 +93,19 @@ void LEDMain() {
         
       break; 
     case iAmHere: 
-        Flash(0);
+        StartUpLED();
       break; 
     case gentleReminder: 
-        Flash(1); 
+        GentleReminderLED(); 
       break;
     case strongReminder:
-        Flash(6); 
+        StrongReminderLED(); 
       break; 
     case thankYou: 
-        
+        ThankYouLED(); 
       break;
     case inUse:
-        
+        InUseLED(); 
       break;
     default: 
         DEBUG.println("Error occured in the LED diagram."); 
@@ -114,34 +114,6 @@ void LEDMain() {
   
 }
 
-void LEDLOOP()
-{
-  int32_t next = 1000;  
-  int32_t result;
-  int8_t  val;
-  static uint32_t count = 0;
-  static uint32_t prev = 0;
-
-  if(millis() >= next)
-  {
-    Serial.print("#");
-    Serial.println(count);
-
-    ledChip.SetChannelPWM(prev, 0);
-    ledChip.SetChannelPWM(count, 0xff);
-
-    ledChip2.SetChannelPWM(prev, 0);
-    ledChip2.SetChannelPWM(count, 0xff);
-    
-
-    prev = count % 9;
-    count++;
-    count %= 9;
-    next += 1000;
-
-
-  }
-}
 
 void Flash(int led_channel) {
   // can be up to 9 different channels. 

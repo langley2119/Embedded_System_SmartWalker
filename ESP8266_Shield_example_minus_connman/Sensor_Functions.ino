@@ -3,14 +3,14 @@
 int SetupButtonInterrupts(){
   pinMode(LEFT_HANDLE_BUTTON, INPUT); // need to configure for button interrupt
   pinMode(RIGHT_HANDLE_BUTTON, INPUT); 
-  attachInterrupt(digitalPinToInterrupt(LEFT_HANDLE_BUTTON), GoToThankYou, RISING);
-  attachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON), GoToThankYou, RISING);
+  attachInterrupt(digitalPinToInterrupt(LEFT_HANDLE_BUTTON), GoToThankYouLeft, RISING);
+  attachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON), GoToThankYouRight, RISING);
   return 0; 
 }
 
 int EnableButtonInterrupts(){
-  attachInterrupt(digitalPinToInterrupt(LEFT_HANDLE_BUTTON), GoToThankYou, RISING);
-  attachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON), GoToThankYou, RISING);
+  attachInterrupt(digitalPinToInterrupt(LEFT_HANDLE_BUTTON), GoToThankYouLeft, RISING);
+  attachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON), GoToThankYouRight, RISING);
 }
 
 int DisableButtonInterrupts(){

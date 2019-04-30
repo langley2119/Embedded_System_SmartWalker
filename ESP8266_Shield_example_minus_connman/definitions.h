@@ -97,4 +97,19 @@ enum State{waiting, iAmHere, gentleReminder, strongReminder, thankYou, inUse};
 enum State current_state;
 enum State volatile next_state; // so that it can be changed in the interrupt callbacks
 
+
+
+/***************** LED CHANNELS ******************/ 
+int greenLED1 = 0;
+int blueLED1 = 1;
+int greenLED2 = 2;
+int blueLED2 = 3;
+int greenLED3 = 4;
+int blueLED3 = 5;
+int redLED1 = 6;
+int redLED2 = 7;
+int redLED3 = 8;
+
+
+
 #endif // SMART_WALKER_DEF_H

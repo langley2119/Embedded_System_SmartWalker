@@ -61,6 +61,7 @@ enum State IAmHereState(unsigned long time_elapsed, int * counter) {
       if(UpperSensorTakeMeasurement() == 2){
         // moving to gentle reminder state
         DEBUG.println("Moving to gentle reminder");
+        ClearLED(); 
         *counter = 0; 
         return gentleReminder; 
       }
@@ -76,6 +77,7 @@ enum State GentleReminderState(unsigned long time_elapsed, int * counter) {
         // no signal 
         DEBUG.println("Moving to strong reminder"); 
         *counter = 0; 
+        ClearLED(); 
         return strongReminder; 
       }
       *counter = 0; 
@@ -88,17 +90,23 @@ enum State StrongReminderState(unsigned long time_elapsed, int * counter) {
     if(time_elapsed >= 1000L * 15){ // be loud for 15 seconds, then timeout
       // timeout feature to go back to waiting 
       *counter = 0; 
+      ClearLED(); 
+      return waiting; 
     }
     return strongReminder;
 }
 
 enum State ThankYouState(unsigned long time_elapsed, int * counter) {
     // always gone to when the walker is grabbed. 
-    DEBUG.println("THANK YOU!!!");
-    
-    printDateAndTime(); 
-    
-    return inUse;  
+    //DEBUG.println("THANK YOU!!!");
+    if(time_elapsed >= 6500L) { // the amount of time 
+        // after this, the LED sequence should be done
+        ClearLED(); 
+        printDateAndTime(); 
+        DEBUG.println("Going to In Use"); 
+        return inUse; 
+      }
+    return thankYou;  
 }
 
 enum State InUseState(unsigned long time_elapsed, int * counter) {
@@ -106,8 +114,9 @@ enum State InUseState(unsigned long time_elapsed, int * counter) {
       if(UpperSensorTakeMeasurement() == 0){
         // no signal 
         DEBUG.println("Moving back to Waiting"); 
-        EnableButtonInterrupts(); 
+        //EnableButtonInterrupts(); 
         *counter = 0; 
+        ClearLED(); 
         return waiting; 
       }
       *counter = 0; 
@@ -116,8 +125,15 @@ enum State InUseState(unsigned long time_elapsed, int * counter) {
 }
 
 /*********** REDIRECTION FUNCTIONS ***********/
-void GoToThankYou(){
-  DEBUG.println("Redirecting to Thank you");
-  DisableButtonInterrupts(); 
+void GoToThankYouLeft(){
+  DEBUG.println("Redirect Left");
+  //DisableButtonInterrupts(); 
+  //delayMicroseconds(1000);
+  next_state = thankYou;   
+}
+
+void GoToThankYouRight() {
+  DEBUG.println("Redirect Right");
+  //delayMicroseconds(1000); 
   next_state = thankYou;   
 }
