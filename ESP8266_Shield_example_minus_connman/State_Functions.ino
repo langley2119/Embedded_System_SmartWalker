@@ -109,5 +109,6 @@ enum State InUseState(unsigned long time_elapsed, int * counter) {
 /*********** REDIRECTION FUNCTIONS ***********/
 void GoToThankYou(){
   DEBUG.println("Redirecting to Thank you");
+  detachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON));
   next_state = thankYou;   
 }

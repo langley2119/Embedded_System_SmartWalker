@@ -84,6 +84,7 @@ RFD77402 myDistance_upper; // hook object to library for upper sensor
 
 // Timing 
 #define STATE_MACH_INTERVAL 100L
+#define LED_INTERVAL 500L
 
 
 // Your ESP8266 baud rate:

@@ -86,7 +86,33 @@ void SetupLEDDriveCurrents() {
 
 }
 
-
+void LEDMain() {
+    // based off the state, do various LED functions
+    switch(current_state) {
+    case waiting: 
+        
+      break; 
+    case iAmHere: 
+        Flash(0);
+      break; 
+    case gentleReminder: 
+        Flash(1); 
+      break;
+    case strongReminder:
+        Flash(6); 
+      break; 
+    case thankYou: 
+        
+      break;
+    case inUse:
+        
+      break;
+    default: 
+        DEBUG.println("Error occured in the LED diagram."); 
+      break;     
+  }
+  
+}
 
 void LEDLOOP()
 {
@@ -115,6 +141,24 @@ void LEDLOOP()
 
 
   }
+}
+
+void Flash(int led_channel) {
+  // can be up to 9 different channels. 
+  // if channel 
+  static int counter = 0; 
+  switch(counter){ // this switch statement allows the same function to be called at a timer instance but have different results. 
+    case 0: 
+        ledChip.SetChannelPWM(led_channel,0xff);  // turn on
+        ledChip2.SetChannelPWM(led_channel,0xff);  // turn on
+      break;
+    case 1: 
+        ledChip.SetChannelPWM(led_channel,0);  // turn off
+        ledChip2.SetChannelPWM(led_channel,0);  // turn on
+      break; 
+  }
+  counter ++; 
+  counter = counter%2; // right now only goes between 0 and 1. 
 }
 
 
