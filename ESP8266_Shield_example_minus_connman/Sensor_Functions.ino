@@ -61,8 +61,6 @@ int UpperSensorTakeMeasurement() {
     return 0; 
     // no signal detected, or the signal is sufficiently far away
   }
-  
-  
-  
+    
 
 }

@@ -53,7 +53,7 @@ static const int32_t enable_pin = 10; // Apparently active high?
 
 // NOTE Must call Setup LED Drive currents to complete. 
 // rather than keeping it one function I made it two and have other setups acting as the delay(1000) to reduce setup time
-void SetupLEDs()
+void SetupLEDs ()
 {
   //Serial.begin(9600);
 

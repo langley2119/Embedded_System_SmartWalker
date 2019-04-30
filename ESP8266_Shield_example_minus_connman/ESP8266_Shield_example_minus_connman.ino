@@ -68,7 +68,7 @@ void setup()
   // up to 16 timers per timer object. 
   // max data sending rate of 10 values per second
   timer.setInterval(STATE_MACH_INTERVAL,StateMachine); 
-  timer.setInterval(LED_INTERVAL,LEDMain); // can be on a separate time from the state machine if flashes must occur slower or faster 
+//  timer.setInterval(LED_INTERVAL,LEDMain); // can be on a separate time from the state machine if flashes must occur slower or faster 
 
   // WIFI Manager Attempts 
   // one-time thing: 
@@ -77,12 +77,12 @@ void setup()
   //wifiManager.setConfigPortalTimeout(180); // waits 3 minutes and then will shut off. 
   //wifiManager.autoConnect("RemindME Walker","remindme"); 
 
-  SetupLEDs(); 
+// SetupLEDs(); 
   SetupRTCandSD();   
   SetupSensors(); 
   SetupButtonInterrupts(); 
   //Blynk.begin(auth, wifi, ssid, pass);
-  SetupLEDDriveCurrents(); 
+//  SetupLEDDriveCurrents(); 
   DEBUG.println("Setup Complete!"); 
 }
 

@@ -102,13 +102,22 @@ enum State ThankYouState(unsigned long time_elapsed, int * counter) {
 }
 
 enum State InUseState(unsigned long time_elapsed, int * counter) {
-
+    if(time_elapsed >= 1000L) { // every second
+      if(UpperSensorTakeMeasurement() == 0){
+        // no signal 
+        DEBUG.println("Moving back to Waiting"); 
+        EnableButtonInterrupts(); 
+        *counter = 0; 
+        return waiting; 
+      }
+      *counter = 0; 
+    }
     return inUse; 
 }
 
 /*********** REDIRECTION FUNCTIONS ***********/
 void GoToThankYou(){
   DEBUG.println("Redirecting to Thank you");
-  detachInterrupt(digitalPinToInterrupt(RIGHT_HANDLE_BUTTON));
+  DisableButtonInterrupts(); 
   next_state = thankYou;   
 }
