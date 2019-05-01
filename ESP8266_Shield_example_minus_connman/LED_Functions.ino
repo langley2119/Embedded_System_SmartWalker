@@ -2,17 +2,11 @@
 
 // DECLARE THE COUNTER OUTSIDE OF THE LED FUNCTIONS 
 
-void ThankYouLED(void)
+void ThankYouLED(int * counter)
 {
-  static int counter = 0; 
-  static int startup = 0;
-  if(startup == 0)
-  {
-    ClearLED();
-    startup = 1;
-  }
-  switch(counter){ // this switch statement allows the same function to be called at a timer instance but have different results. 
-    case 0: 
+  
+  switch(*counter){ // this switch statement allows the same function to be called at a timer instance but have different results. 
+    case 1: 
         ledChip.SetChannelPWM(greenLED1,50);  // turn on
         ledChip.SetChannelPWM(greenLED2,0);  // turn on
         ledChip.SetChannelPWM(greenLED3,0);  // turn on
@@ -20,34 +14,28 @@ void ThankYouLED(void)
         ledChip2.SetChannelPWM(greenLED2,0);  // turn on
         ledChip2.SetChannelPWM(greenLED3,0);  // turn on
       break;
-    case 1: 
+    case 2: 
         ledChip.SetChannelPWM(greenLED1,0);  // turn off
         ledChip.SetChannelPWM(greenLED2,50);  // turn on
 		    ledChip2.SetChannelPWM(greenLED1,0);  // turn off
         ledChip2.SetChannelPWM(greenLED2,50);  // turn on
       break; 
-    case 2:
+    case 3:
         ledChip.SetChannelPWM(greenLED2,0);  // turn off
         ledChip.SetChannelPWM(greenLED3,50);  // turn on 
 		    ledChip2.SetChannelPWM(greenLED2,0);  // turn off
         ledChip2.SetChannelPWM(greenLED3,50);  // turn on 
+        *counter = 0; // by setting it to 0 we get 1 the next time it comes around, to restart the cycle 
       break;
   }
-  counter++;
-  counter = counter % 3;
+  
 }
 
-void StrongReminderLED(void)
+void StrongReminderLED(int * counter)
 {
-  static int counter = 0;
-  static int startup = 0;
-  if(startup == 0)
-  {
-    ClearLED();
-    startup = 1;
-  } 
-  switch(counter){// this switch statement allows the same function to be called at a timer instance but have different results. 
-    case 0: 
+
+  switch(*counter){// this switch statement allows the same function to be called at a timer instance but have different results. 
+    case 1: 
         ledChip.SetChannelPWM(redLED1,50);  // turn on
         ledChip.SetChannelPWM(redLED2,50);  // turn on
         ledChip.SetChannelPWM(redLED3,50);  // turn on
@@ -55,30 +43,24 @@ void StrongReminderLED(void)
         ledChip2.SetChannelPWM(redLED2,50);  // turn on
         ledChip2.SetChannelPWM(redLED3,50);  // turn on
       break;
-    case 1: 
+    case 2: 
         ledChip.SetChannelPWM(redLED1,0);  // turn off
         ledChip.SetChannelPWM(redLED2,0);  // turn off
         ledChip.SetChannelPWM(redLED3,0);  // turn on
 		    ledChip2.SetChannelPWM(redLED1,0);  // turn off
         ledChip2.SetChannelPWM(redLED2,0);  // turn off
         ledChip2.SetChannelPWM(redLED3,0);  // turn on
+        *counter = 0; // by setting it to -1 we get 0 the next time it comes around 
       break;
   }
-  counter++;
-  counter = counter % 2;
+
 }
 
-void StartUpLED(void)
+void StartUpLED(int * counter)
 {
-  static int counter = 0; 
-  static int startup = 0;
-  if(startup == 0)
-  {
-    ClearLED();
-    startup = 1;
-  } 
-  switch(counter){ // this switch statement allows the same function to be called at a timer instance but have different results. 
-    case 0: 
+  // this routine only happens once, so we refrain from resetting the counter in the last step. 
+  switch(*counter){ // this switch statement allows the same function to be called at a timer instance but have different results. 
+    case 1: 
         ledChip.SetChannelPWM(blueLED1,50);  
         ledChip.SetChannelPWM(greenLED1,50);  
         ledChip.SetChannelPWM(redLED1,50);
@@ -98,7 +80,7 @@ void StartUpLED(void)
         ledChip2.SetChannelPWM(greenLED3,0);  
         ledChip2.SetChannelPWM(redLED3,0);
       break;
-    case 1:
+    case 2:
         ledChip.SetChannelPWM(blueLED1,0); 
         ledChip.SetChannelPWM(greenLED1,0);  
         ledChip.SetChannelPWM(redLED1,0);  
@@ -112,7 +94,7 @@ void StartUpLED(void)
         ledChip2.SetChannelPWM(greenLED2,50);  
         ledChip2.SetChannelPWM(redLED2,50);  
       break; 
-    case 2:
+    case 3:
         ledChip.SetChannelPWM(blueLED2,0); 
         ledChip.SetChannelPWM(greenLED2,0);  
         ledChip.SetChannelPWM(redLED2,0);  
@@ -126,7 +108,7 @@ void StartUpLED(void)
         ledChip2.SetChannelPWM(greenLED3,50);  
         ledChip2.SetChannelPWM(redLED3,50); 		
       break;
-     case 3:
+     case 4:
         ledChip.SetChannelPWM(blueLED1,50);  
         ledChip.SetChannelPWM(greenLED1,50);  
         ledChip.SetChannelPWM(redLED1,50);
@@ -140,24 +122,19 @@ void StartUpLED(void)
         ledChip2.SetChannelPWM(greenLED2,50);  
         ledChip2.SetChannelPWM(redLED2,50);
       break;
-    default:
-        ClearLED();
+    case 10:
+        ClearLED(); // keep the lights on for a bit before the setup sequence turns off
       break;
+    default:
+      break; 
   }
-  counter++;
+
 }
 
-void GentleReminderLED(void)
+void GentleReminderLED(int * counter)
 {
-  static int counter = 0; 
-  static int startup = 0;
-  if(startup == 0)
-  {
-    ClearLED();
-    startup = 1;
-  }
-  switch(counter){ // this switch statement allows the same function to be called at a timer instance but have different results. 
-    case 0: 
+  switch(*counter){ // this switch statement allows the same function to be called at a timer instance but have different results. 
+    case 1: 
         ledChip.SetChannelPWM(greenLED1,50);  // turn on
         ledChip.SetChannelPWM(redLED1,50);  // turn on
         ledChip.SetChannelPWM(greenLED3,0);  // turn on
@@ -168,7 +145,7 @@ void GentleReminderLED(void)
         ledChip2.SetChannelPWM(redLED3,0);  // turn on
         
       break;
-    case 1: 
+    case 2: 
         ledChip.SetChannelPWM(greenLED2,50);  // turn on
         ledChip.SetChannelPWM(redLED2,50);  // turn on
         ledChip.SetChannelPWM(greenLED1,0);  // turn on
@@ -178,7 +155,7 @@ void GentleReminderLED(void)
         ledChip2.SetChannelPWM(greenLED1,0);  // turn on
         ledChip2.SetChannelPWM(redLED1,0);  // turn on
       break; 
-    case 2:
+    case 3:
         ledChip.SetChannelPWM(greenLED3,50);  // turn on
         ledChip.SetChannelPWM(redLED3,50);  // turn on
         ledChip.SetChannelPWM(greenLED2,0);  // turn on
@@ -187,25 +164,18 @@ void GentleReminderLED(void)
         ledChip2.SetChannelPWM(redLED3,50);  // turn on
         ledChip2.SetChannelPWM(greenLED2,0);  // turn on
         ledChip2.SetChannelPWM(redLED2,0);  // turn on
+        *counter = 0;
       break;
   }
-  counter++;
-  counter = counter % 3;
+
 }
 
-void InUseLED(void)
+void InUseLED(int * counter)
 {
-  static int counter = 0;
-  static int startup = 0;
-  
-  if(startup == 0)
-  {
-    ClearLED();
-    startup = 1;
-  } 
-  int slow_counter = counter/5; // slow down the counter five times
+ 
+  int slow_counter = *counter/5 + 1; // slow down the counter to change functionality every 5th counter cycle. 
   switch(slow_counter){// this switch statement allows the same function to be called at a timer instance but have different results. 
-    case 0: 
+    case 1: 
       ledChip.SetChannelPWM(redLED2,20);  // turn on
       ledChip.SetChannelPWM(greenLED2,20);  // turn on
       ledChip.SetChannelPWM(blueLED2,20);  // turn on
@@ -213,7 +183,7 @@ void InUseLED(void)
       ledChip2.SetChannelPWM(greenLED2,20);  // turn on
       ledChip2.SetChannelPWM(blueLED2,20);  // turn on
       break;
-    case 1: 
+    case 2: 
       ledChip.SetChannelPWM(redLED2,0);  // turn off
       ledChip.SetChannelPWM(greenLED2,0);  // turn off
       ledChip.SetChannelPWM(blueLED2,0);  // turn on
@@ -222,12 +192,13 @@ void InUseLED(void)
       ledChip2.SetChannelPWM(blueLED2,0);  // turn on
       break;
   }
-  counter++;
-  counter = counter % 10;
+  // resets counter after every 10 cycles. 
+  *counter = *counter % 10;
 }
 
 void ClearLED(void)
 {
+  //delay(10);
   ledChip.SetChannelPWM(blueLED1,0);  
   ledChip.SetChannelPWM(greenLED1,0);  
   ledChip.SetChannelPWM(redLED1,0);

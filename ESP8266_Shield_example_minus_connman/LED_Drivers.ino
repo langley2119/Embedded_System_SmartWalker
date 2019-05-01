@@ -30,11 +30,10 @@ or concerns with licensing, please contact techsupport@sparkfun.com.
 
 Distributed as-is; no warranty is given.
 ******************************************************************************/
+#include "definitions.h"
 
-
-#include "lp55231.h"
-
-static const int32_t enable_pin = 10; // Apparently active high?
+// don't need the enable 
+//static const int32_t enable_pin = 10; // Apparently active high?
 
 // A quick example demonstrating two LP55231's on the same I2C bus.
 //
@@ -88,29 +87,50 @@ void SetupLEDDriveCurrents() {
 
 void LEDMain() {
     // based off the state, do various LED functions
+    
+    // The LED main function has one master counter that goes to all of the sub functions.
+    // The sub functions have LED cycles they do based on the counter value, and can reset the counter to 0 if necessary
+    static int counter = 0; 
+    // we want the LED sequence to start fresh (counter = 0) each time the state is switched to it. 
+    // an easy way to do this is to have a static state, previous state, that we can check the current state against. 
+    // If they don't match, then we know that we should reset the counter to 0
+    static enum State previous_state = waiting;  // initialized to the idle state of the system. 
+    if(current_state != previous_state){
+      //DEBUG.println("LED detected a change in state"); 
+      ClearLED(); 
+      counter = 1; 
+      previous_state = current_state; // only changing here since we don't need to assign it otherwise
+    }
+
+    //DEBUG.println(counter);
+    
     switch(current_state) {
     case waiting: 
         
       break; 
     case iAmHere: 
-        StartUpLED();
+        StartUpLED(&counter);
       break; 
     case gentleReminder: 
-        GentleReminderLED(); 
+        GentleReminderLED(&counter); 
       break;
     case strongReminder:
-        StrongReminderLED(); 
+        StrongReminderLED(&counter); 
       break; 
     case thankYou: 
-        ThankYouLED(); 
+        ThankYouLED(&counter); 
       break;
     case inUse:
-        InUseLED(); 
+        InUseLED(&counter); 
       break;
     default: 
         DEBUG.println("Error occured in the LED diagram."); 
       break;     
   }
+
+  // update the counter
+  counter++; 
+   
   
 }
 
