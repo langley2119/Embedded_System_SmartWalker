@@ -115,10 +115,10 @@ enum State GentleReminderState(unsigned long time_elapsed, int * counter) {
 
 enum State StrongReminderState(unsigned long time_elapsed, int * counter) {
     // do strong reminder things 
-    if(time_elapsed % 1000L == 0)
+    if(time_elapsed > 3000 && time_elapsed % 1000L == 0)
     {
-      if(LowerSensorTakeMeasurement()==0) {
-        // nobody home! 
+      if(LowerSensorTakeMeasurement()==0 && UpperSensorTakeMeasurement() == 0) {
+        // nobody home! both have to be 0 for it to be effective
         return waiting; 
       }  
     }
@@ -169,14 +169,19 @@ enum State InUseState(unsigned long time_elapsed, int * counter) {
 
 /*********** REDIRECTION FUNCTIONS ***********/
 void GoToThankYouLeft(){
-  DEBUG.println("Redirect Left");
-  //DisableButtonInterrupts(); 
-  //delayMicroseconds(1000);
-  next_state = thankYou;   
+  if(current_state != inUse) {
+    // we don't want a continual thank you state if the person is currently using the walker. 
+    DEBUG.println("Redirect Left");
+    //DisableButtonInterrupts(); 
+    //delayMicroseconds(1000);
+    next_state = thankYou;   
+  }
 }
 
 void GoToThankYouRight() {
-  DEBUG.println("Redirect Right");
-  //delayMicroseconds(1000); 
-  next_state = thankYou;   
+  if(current_state != inUse) {
+    DEBUG.println("Redirect Right");
+    //delayMicroseconds(1000); 
+    next_state = thankYou;   
+  }
 }
