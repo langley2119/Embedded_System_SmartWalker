@@ -77,8 +77,8 @@ void SetupLEDs ()
 void SetupLEDDriveCurrents() {
   for(uint8_t i = 0; i < 9; i++)
   {
-    ledChip.SetDriveCurrent(i, 0xff);
-    ledChip2.SetDriveCurrent(i, 0xff);
+    ledChip.SetDriveCurrent(i, 0x80);
+    ledChip2.SetDriveCurrent(i, 0x80);
   }
   
   Serial.println("LED Setup Complete");

@@ -9,6 +9,14 @@ void StateMachine()
   counter = counter + 1;
   time_elapsed = counter * STATE_MACH_INTERVAL;  
 
+
+  if(next_state != current_state) {
+    //DEBUG.println("State change! Counter Reset"); 
+    DEBUG.print("Current State: "); DEBUG.println(next_state); 
+    counter = 0; 
+  }
+
+
   current_state = next_state; 
   
   switch(current_state) {
@@ -35,11 +43,6 @@ void StateMachine()
       break;     
   }
 
-  if(next_state != current_state) {
-    //DEBUG.println("State change! Counter Reset"); 
-    DEBUG.print("Current State: "); DEBUG.println(next_state); 
-    counter = 0; 
-  }
 
    
   //Blynk.virtualWrite(V5, (millis()/1000) % 10); 
@@ -48,9 +51,13 @@ void StateMachine()
 
 
 enum State WaitingState(unsigned long time_elapsed, int * counter) {
-    if(time_elapsed >= 1000L) { // every second
+    if(LowerSensorTakeMeasurement() == 1){
+      // DEBUG.println("going to I AM Here"); 
+      return iAmHere;
+    }
+    if(time_elapsed >= 2000L) { // every two seconds
       //DEBUG.println(time_elapsed);
-      if(LowerSensorTakeMeasurement() == 1) {
+      if(UpperSensorTakeMeasurement() > 0) {
         // detected motion, go to i am here
         //DEBUG.println("going to I AM Here");
         return iAmHere; 
@@ -115,7 +122,10 @@ enum State ThankYouState(unsigned long time_elapsed, int * counter) {
     //DEBUG.println("THANK YOU!!!");
     if(time_elapsed >= 6500L) { // the amount of time 
         // after this, the LED sequence should be done 
-        printDateAndTime(); 
+        if(CARD_OK == 1) // that means the card is ok to use and we can successfully print
+        {
+          printDateAndTime(); 
+        }
         //DEBUG.println("Going to In Use"); 
         return inUse; 
       }
@@ -123,6 +133,12 @@ enum State ThankYouState(unsigned long time_elapsed, int * counter) {
 }
 
 enum State InUseState(unsigned long time_elapsed, int * counter) {
+    while(digitalRead(LEFT_HANDLE_BUTTON)==1 || digitalRead(RIGHT_HANDLE_BUTTON) == 1) 
+    {
+      // if the person is using the buttons, then we are absolutely in use and don't need to check the other criterion. 
+      return inUse;  
+    }
+    
     if(time_elapsed >= 1000L) { // every second
       if(UpperSensorTakeMeasurement() == 0){
         // no signal 

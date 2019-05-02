@@ -99,9 +99,15 @@ void loop()
   // currently disabled to prevent the SD card from preventing other operation of the device.
    
   // FIXME: maybe add a parameter that enables easier checking and initialization if possible
-  /*if (!digitalRead(cardDetect))
+  if (!digitalRead(cardDetect))
   {
-    initializeCard();
-  }*/
+    if(CARD_OK == 1)
+    {
+      initializeCard();
+    }
+    else {
+      initializeCard();   
+    }
+  }
   
 }

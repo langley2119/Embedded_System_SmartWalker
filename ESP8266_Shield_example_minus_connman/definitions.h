@@ -91,6 +91,7 @@ RFD77402 myDistance_upper; // hook object to library for upper sensor
 #define ESP8266_BAUD 9600
 
 
+bool CARD_OK = 1; 
 
 /****************** GLOBALS **********************/ 
 enum State{waiting, iAmHere, gentleReminder, strongReminder, thankYou, inUse}; 

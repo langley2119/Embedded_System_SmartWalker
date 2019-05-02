@@ -42,7 +42,7 @@ int century;
 
   int previousWeek;
   int currentWeek;
-  int previousDay;
+  int previousDay = 10; // this is not a real day (1-6). Guarantees that 
 
 void SetupRTCandSD()
 {
@@ -51,11 +51,16 @@ void SetupRTCandSD()
   
   //Serial.begin(57600); // hopefully this doesn't wreak havok. 
 
+
   if (rtc.begin() == false) 
   {
     Serial.println("Something went wrong with the RTC, check wiring");
   }
-
+  //String currentDate = rtc.stringDateUSA(); //Get the current date in mm/dd/yyyy format (we're weird)
+  //String currentTime = rtc.stringTime(); //Get the time
+  //calculateDayOfYear(month,day,year,century);
+  //calculateWeekday(dayOfWeek,firstOfYear);
+  
   DEBUG.println("RTC online!");
   while (!Serial);  // Wait for serial port to connect (ATmega32U4 type PCBAs)
 
@@ -99,16 +104,29 @@ void loop()
 
 */
 
-void initializeCard(void)
+int initializeCard(void)
 {
   static int tries = 1; 
   Serial.print(F("Initializing SD card..."));
-
+  //CARD_OK = 0; 
   // Is there even a card?
   if (!digitalRead(cardDetect))
   {
     Serial.println(F("No card detected. Waiting for card."));
-    while (!digitalRead(cardDetect));
+    if(!digitalRead(cardDetect) && tries <= 10)
+    {
+      CARD_OK = 0; 
+      tries++; 
+    }
+    else if(tries <= 10) 
+    { // this means that a card was read since this condition has not been satisfied
+      tries = 1; 
+      CARD_OK = 1; 
+    }
+    else {
+      // proceed with no card by setting global CARD_OK to 0, aka it's not ok use; 
+      CARD_OK = 0; 
+    }
     delay(250); // 'Debounce insertion'
   }
 
@@ -120,15 +138,19 @@ void initializeCard(void)
     if(tries <= 10){
       initializeCard(); // Possible infinite retry loop is as valid as anything
       tries++; 
+      return -1; 
     }
     else {
       Serial.println(F("Giving up on using SD")); 
+      CARD_OK = 0; 
+      return -1; 
     }
   }
   else
   {
     alreadyBegan = true;
     tries = 1; // success! reset tries
+    CARD_OK = 1; 
   }
   Serial.println(F("Initialization done."));
     
@@ -146,6 +168,8 @@ void initializeCard(void)
   Serial.println(fileName);
 
   Serial.println(F("Enter text to be written to file. 'EOF' will terminate writing."));
+
+  return 0; 
 }
 
 void eof(void)
@@ -175,6 +199,8 @@ void eof(void)
 
 void printDateAndTime(void)
 {
+  if(CARD_OK == 1)
+  {
   String currentDate = rtc.stringDateUSA(); //Get the current date in mm/dd/yyyy format (we're weird)
   //String currentDate = rtc.stringDate()); //Get the current date in dd/mm/yyyy format
   String currentTime = rtc.stringTime(); //Get the time
@@ -214,6 +240,8 @@ void printDateAndTime(void)
     sprintf(fileName, "%dweek%d.txt", year, weekNumber);
   }
 
+  // DEBUG Step 
+  DEBUG.println("printing to "); DEBUG.println(fileName); 
   
   fd = SD.open(fileName, FILE_WRITE);
   if (fd) 
@@ -231,6 +259,11 @@ void printDateAndTime(void)
     fd.flush();
     index = 0;
     fd.close();
+  }
+
+  }
+  else{
+    DEBUG.println("Card not detected, skipping PrintDateAndTime call."); 
   }
 }
 

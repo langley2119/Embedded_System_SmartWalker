@@ -1,5 +1,14 @@
 #include "definitions.h" 
 
+/*******Sensor notes********/
+/*
+  The PIR sensor is highly adjustable on the back. It will also, if the LED is enabled, blink upon startup and take a moment to initialize before use. 
+
+
+
+
+
+*/
 int SetupButtonInterrupts(){
   pinMode(LEFT_HANDLE_BUTTON, INPUT); // need to configure for button interrupt
   pinMode(RIGHT_HANDLE_BUTTON, INPUT); 
@@ -37,6 +46,7 @@ int SetupSensors() {
 
 
 int LowerSensorTakeMeasurement() {
+
   int motion_sense; 
   motion_sense = digitalRead(PIR_DOUT); 
   // maybe have some sort of filtering/window in this part of the function. Hold off for the moment 
@@ -49,7 +59,7 @@ int UpperSensorTakeMeasurement() {
   int distance; 
   myDistance_upper.takeMeasurement(); 
   distance = myDistance_upper.getDistance(); 
-  //DEBUG.println(distance); 
+  DEBUG.println(distance); 
   // distance returned on a scale of 0 to 2047
   if(distance < 1000) {
     return 2;   
