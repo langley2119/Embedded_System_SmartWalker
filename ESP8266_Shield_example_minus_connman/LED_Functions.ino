@@ -10,21 +10,21 @@ void ThankYouLED(int * counter)
         ledChip.SetChannelPWM(greenLED1,50);  // turn on
         ledChip.SetChannelPWM(greenLED2,0);  // turn on
         ledChip.SetChannelPWM(greenLED3,0);  // turn on
-        ledChip2.SetChannelPWM(greenLED1,50);  // turn on
+        ledChip2.SetChannelPWM(greenLED1,0);  // turn on
         ledChip2.SetChannelPWM(greenLED2,0);  // turn on
-        ledChip2.SetChannelPWM(greenLED3,0);  // turn on
+        ledChip2.SetChannelPWM(greenLED3,50);  // turn on
       break;
     case 2: 
         ledChip.SetChannelPWM(greenLED1,0);  // turn off
         ledChip.SetChannelPWM(greenLED2,50);  // turn on
-		    ledChip2.SetChannelPWM(greenLED1,0);  // turn off
+		    ledChip2.SetChannelPWM(greenLED3,0);  // turn off
         ledChip2.SetChannelPWM(greenLED2,50);  // turn on
       break; 
     case 3:
         ledChip.SetChannelPWM(greenLED2,0);  // turn off
         ledChip.SetChannelPWM(greenLED3,50);  // turn on 
 		    ledChip2.SetChannelPWM(greenLED2,0);  // turn off
-        ledChip2.SetChannelPWM(greenLED3,50);  // turn on 
+        ledChip2.SetChannelPWM(greenLED1,50);  // turn on 
         *counter = 0; // by setting it to 0 we get 1 the next time it comes around, to restart the cycle 
       break;
   }
@@ -70,15 +70,15 @@ void StartUpLED(int * counter)
         ledChip.SetChannelPWM(blueLED3,0); 
         ledChip.SetChannelPWM(greenLED3,0);  
         ledChip.SetChannelPWM(redLED3,0);   
-		    ledChip2.SetChannelPWM(blueLED1,50);  
-        ledChip2.SetChannelPWM(greenLED1,50);  
-        ledChip2.SetChannelPWM(redLED1,50);
+		    ledChip2.SetChannelPWM(blueLED1,0);  
+        ledChip2.SetChannelPWM(greenLED1,0);  
+        ledChip2.SetChannelPWM(redLED1,0);
         ledChip2.SetChannelPWM(blueLED2,0); 
         ledChip2.SetChannelPWM(greenLED2,0);  
         ledChip2.SetChannelPWM(redLED2,0);  
-        ledChip2.SetChannelPWM(blueLED3,0); 
-        ledChip2.SetChannelPWM(greenLED3,0);  
-        ledChip2.SetChannelPWM(redLED3,0);
+        ledChip2.SetChannelPWM(blueLED3,50); 
+        ledChip2.SetChannelPWM(greenLED3,50);  
+        ledChip2.SetChannelPWM(redLED3,50);
       break;
     case 2:
         ledChip.SetChannelPWM(blueLED1,0); 
@@ -87,9 +87,9 @@ void StartUpLED(int * counter)
         ledChip.SetChannelPWM(blueLED2,50); 
         ledChip.SetChannelPWM(greenLED2,50);  
         ledChip.SetChannelPWM(redLED2,50);  
-		    ledChip2.SetChannelPWM(blueLED1,0); 
-        ledChip2.SetChannelPWM(greenLED1,0);  
-        ledChip2.SetChannelPWM(redLED1,0);  
+		    ledChip2.SetChannelPWM(blueLED3,0); 
+        ledChip2.SetChannelPWM(greenLED3,0);  
+        ledChip2.SetChannelPWM(redLED3,0);  
         ledChip2.SetChannelPWM(blueLED2,50); 
         ledChip2.SetChannelPWM(greenLED2,50);  
         ledChip2.SetChannelPWM(redLED2,50);  
@@ -104,9 +104,9 @@ void StartUpLED(int * counter)
 		    ledChip2.SetChannelPWM(blueLED2,0); 
         ledChip2.SetChannelPWM(greenLED2,0);  
         ledChip2.SetChannelPWM(redLED2,0);  
-        ledChip2.SetChannelPWM(blueLED3,50); 
-        ledChip2.SetChannelPWM(greenLED3,50);  
-        ledChip2.SetChannelPWM(redLED3,50); 		
+        ledChip2.SetChannelPWM(blueLED1,50); 
+        ledChip2.SetChannelPWM(greenLED1,50);  
+        ledChip2.SetChannelPWM(redLED1,50); 		
       break;
      case 4:
         ledChip.SetChannelPWM(blueLED1,50);  
@@ -115,9 +115,9 @@ void StartUpLED(int * counter)
         ledChip.SetChannelPWM(blueLED2,50); 
         ledChip.SetChannelPWM(greenLED2,50);  
         ledChip.SetChannelPWM(redLED2,50);  
-		    ledChip2.SetChannelPWM(blueLED1,50);  
-        ledChip2.SetChannelPWM(greenLED1,50);  
-        ledChip2.SetChannelPWM(redLED1,50);
+		    ledChip2.SetChannelPWM(blueLED3,50);  
+        ledChip2.SetChannelPWM(greenLED3,50);  
+        ledChip2.SetChannelPWM(redLED3,50);
         ledChip2.SetChannelPWM(blueLED2,50); 
         ledChip2.SetChannelPWM(greenLED2,50);  
         ledChip2.SetChannelPWM(redLED2,50);
@@ -139,10 +139,10 @@ void GentleReminderLED(int * counter)
         ledChip.SetChannelPWM(redLED1,50);  // turn on
         ledChip.SetChannelPWM(greenLED3,0);  // turn on
         ledChip.SetChannelPWM(redLED3,0);  // turn on
-		    ledChip2.SetChannelPWM(greenLED1,50);  // turn on
-        ledChip2.SetChannelPWM(redLED1,50);  // turn on
-        ledChip2.SetChannelPWM(greenLED3,0);  // turn on
-        ledChip2.SetChannelPWM(redLED3,0);  // turn on
+		    ledChip2.SetChannelPWM(greenLED3,50);  // turn on
+        ledChip2.SetChannelPWM(redLED3,50);  // turn on
+        ledChip2.SetChannelPWM(greenLED1,0);  // turn on
+        ledChip2.SetChannelPWM(redLED1,0);  // turn on
         
       break;
     case 2: 
@@ -152,16 +152,16 @@ void GentleReminderLED(int * counter)
         ledChip.SetChannelPWM(redLED1,0);  // turn on
 		    ledChip2.SetChannelPWM(greenLED2,50);  // turn on
         ledChip2.SetChannelPWM(redLED2,50);  // turn on
-        ledChip2.SetChannelPWM(greenLED1,0);  // turn on
-        ledChip2.SetChannelPWM(redLED1,0);  // turn on
+        ledChip2.SetChannelPWM(greenLED3,0);  // turn on
+        ledChip2.SetChannelPWM(redLED3,0);  // turn on
       break; 
     case 3:
         ledChip.SetChannelPWM(greenLED3,50);  // turn on
         ledChip.SetChannelPWM(redLED3,50);  // turn on
         ledChip.SetChannelPWM(greenLED2,0);  // turn on
         ledChip.SetChannelPWM(redLED2,0);  // turn on
-		    ledChip2.SetChannelPWM(greenLED3,50);  // turn on
-        ledChip2.SetChannelPWM(redLED3,50);  // turn on
+		    ledChip2.SetChannelPWM(greenLED1,50);  // turn on
+        ledChip2.SetChannelPWM(redLED1,50);  // turn on
         ledChip2.SetChannelPWM(greenLED2,0);  // turn on
         ledChip2.SetChannelPWM(redLED2,0);  // turn on
         *counter = 0;

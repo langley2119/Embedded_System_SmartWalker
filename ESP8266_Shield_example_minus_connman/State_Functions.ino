@@ -71,7 +71,7 @@ enum State WaitingState(unsigned long time_elapsed, int * counter) {
 enum State IAmHereState(unsigned long time_elapsed, int * counter) {
     if(time_elapsed % 500 == 0) { // every second FIXME: make more frequent in release
       if(UpperSensorTakeMeasurement() == 2){
-        // moving to gentle reminder state
+        // moving to gentle reminder state due to a new proximal signal 
         //DEBUG.println("Moving to gentle reminder");
         return gentleReminder; 
       }
@@ -88,16 +88,21 @@ enum State IAmHereState(unsigned long time_elapsed, int * counter) {
 enum State GentleReminderState(unsigned long time_elapsed, int * counter) {
     // do gentle reminder things
     if(time_elapsed % 500 == 0) { // every half second
-      if(UpperSensorTakeMeasurement() == 0){
+      if(UpperSensorTakeMeasurement() < 1){
         // no signal 
         //DEBUG.println("Moving to strong reminder"); 
         return strongReminder; 
       }
     }
-    if(time_elapsed >= 1000L * 5 && time_elapsed % 1000 == 0) { // after five seconds, every second
-      if(LowerSensorTakeMeasurement() == 0){ // nobody home
+    if(time_elapsed >= 1000L * 5 && time_elapsed % 1000 == 0) { // after ten seconds, every second
+      if(LowerSensorTakeMeasurement() == 0 && UpperSensorTakeMeasurement() == 0){ // nobody home
         //DEBUG.println("Going to waiting"); 
         return waiting; 
+      }
+      else if (UpperSensorTakeMeasurement() == 2){
+         // detected proximal signal. What is the user up to? come on and grab me
+         return strongReminder; 
+        
       }
     }
 
@@ -110,6 +115,13 @@ enum State GentleReminderState(unsigned long time_elapsed, int * counter) {
 
 enum State StrongReminderState(unsigned long time_elapsed, int * counter) {
     // do strong reminder things 
+    if(time_elapsed % 1000L == 0)
+    {
+      if(LowerSensorTakeMeasurement()==0) {
+        // nobody home! 
+        return waiting; 
+      }  
+    }
     if(time_elapsed >= 1000L * 15){ // be loud for 15 seconds, then timeout
       // timeout feature to go back to waiting 
       return waiting; 
@@ -140,12 +152,15 @@ enum State InUseState(unsigned long time_elapsed, int * counter) {
     }
     
     if(time_elapsed >= 1000L) { // every second
-      if(UpperSensorTakeMeasurement() == 0){
-        // no signal 
+      if(UpperSensorTakeMeasurement() > 1){
+        // proximal signal. User still standing there. 
         //DEBUG.println("Moving back to Waiting"); 
         //EnableButtonInterrupts(); 
         *counter = 0; 
-        return waiting; 
+        return gentleReminder; 
+      }
+      else{
+        return waiting;   
       }
       *counter = 0; 
     }

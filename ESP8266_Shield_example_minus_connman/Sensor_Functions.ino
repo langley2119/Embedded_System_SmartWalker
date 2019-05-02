@@ -61,10 +61,10 @@ int UpperSensorTakeMeasurement() {
   distance = myDistance_upper.getDistance(); 
   DEBUG.println(distance); 
   // distance returned on a scale of 0 to 2047
-  if(distance < 1000) {
+  if(distance < 650) { // empirically determined that it's a proximal signal. 
     return 2;   
   }
-  else if(distance < 1750) {
+  else if(distance < 1250) { // this is what we are considering someone close by 
     return 1; 
   }
   else {
