@@ -2,6 +2,7 @@
 \usepackage{fullpage}
 \usepackage{hyperref}
 \usepackage{graphicx} % new way of doing eps files
+\graphicspath{images/}
 \usepackage{listings} % nice code layout
 \usepackage[usenames]{color} % color
 \definecolor{listinggray}{gray}{0.9}
@@ -78,7 +79,50 @@ Other useful features include:
 	\item I$^2$C: many sensors communicate via this protocol, including some of the QWIIC enabled components by Sparkfun like the Real-Time Clock and the RF sensor. 
 \end{itemize}
 
-\subsection{Schematic and Parts Used}
+\subsection{Schematic}
+
+The schematic is shown below in Figure
+
+
+The microcontroller used was the Arduino Mega 2560, and the Arduino IDE was used to implement the code onto the board. An Arduino Mega Protoshield was used to make the middle connections needed to reach the same circuit as shown in Figure 1. The proto board had the resistors and capacitors soldered onto it so that a hardware debounce was created for the buttons to give the most accurate readings of the button press. Above the protoshield, was another Wi-Fi shield that will be used in future developments of this product to help implement the ability to store data onto a website that can be accessed by another device. The Arduino is powered by a 9V battery, but in the future, it is desired that a rechargeable battery substitute should be used.
+ 
+The LED modules used for the display of the states use 3.3V logic in order to operate and have four different pins. The voltage in, the ground, the SCL, and the SDA pins. They are powered by the 3.3V pin on the Arduino Mega, and connected to the SCL and SDA pins as well. The next connection is the QWIIC adapter module. This was used to connect multiple QWIIC compatible devices together without having to connect separate wires from the SDA and SCL pins. This reduced wires and made packaging easier. All QWIIC components use 3.3V logic and are therefore connected to the 3.3V pin on the Arduino. Connected to the QWIIC adapter is the RF Time of Flight Sensor, and the Real Time Clock. Both devices were connected through the QWIIC wiring, and only have those connections used. The Real Time clock has a small battery that charges when power is applied to the board, and expends power from the battery when there is no power in. This allows the module to keep track of the current time even if the power is removed. The next module used was the Shifting Micro SD Breakout, which was used to write the data onto a micro SD card. For the Arduino Mega, the SCK, DI, and D0 pins must be connected exactly to digital pins 52, 51, and 50 respectively. The CS pin and CD pin can be connected to any other digital pin, but it was decided to use digital pins 8 and 9 for this project. This module is the only one that requires 5V logic and is therefore connected to the 5V pin to the Arduino. The last module is the Open PIR Sensor. This uses 3.3V logic and outputs a digital and analog signal, but only the digital output is needed for this project. 
+
+One other module that would be nice to include is a speaker, that would output an audible noise for different states to grab the attention of the user. This was not implemented due to time constraints but is a goal of the project sponsor.
+
+\subsection{Parts Used}
+The specific hardware components are listed below. Additionally, the URLs of where many components can be purchased are given in the Appendices. 
+
+\begin{itemize}
+	\item \textbf{Arduino Mega 2650}
+	\item \textbf{Upper Sensor} - Sparkfun Distance Sensor Breakout – RFD77402 (QWIIC)
+	\begin{itemize}
+		\item Detects human presence up to 2 meters with I$^2$C
+	\end{itemize}
+	\item \textbf{Lower Sensor} - Sparkfun OpenPIR
+	\begin{itemize}
+		\item Measures for human presence and returns a digital 1 or 0 depending on whether some motion (ideally a human) is detected
+	\end{itemize}
+	\item \textbf{LEDs} - Sparkfun LP55231 LED Driver Breakout
+	\begin{itemize}
+		\item Interfaces with I$^2$C and three RGB LEDs for different colors and flashing
+	\end{itemize}
+	\item \textbf{Buttons} - Simple Momentary Push Buttons
+	\begin{itemize}
+		\item can be read with GPIO digital pins
+		\item very noisy and require debouncing circuitry
+	\end{itemize}
+	\item \textbf{SD Card Module} - Sparkfun Level Shifting microSD Breakout
+	\begin{itemize}
+		\item Allows for mass storage of data on the Arduino Mega
+	\end{itemize}
+	\item \textbf{Real Time Clock (RTC) Module} - Real Time Clock (QWIIC) – RV-1805
+	\begin{itemize}
+		\item Maintains accurate date and time for logging
+	\end{itemize}
+	\item \textbf{QWIIC Adapter} - allowed for the 4 wires used for I$^2$C (SDA, SCL, 3.3V, GND) to be combined into a single solderless cable structure.
+	
+\end{itemize}
 
 \section{Software Design}
 The software for this project was all written in the arduino IDE. Much of it was taken from example sketches, specifically the setup of sensors and peripherals. The libraries for all of the main functions are included in the libraries/ folder in the GitRepository. The software design main loop was built with the idea of being compatible with an app later on for monitoring. This app was furnished with Arduino compatibilty by Blynk, an Internet of Things (IoT) company based on creating solutions that the user can control from his/her phone. The main blynk documentation can be found by clicking \href{https://docs.blynk.cc/}{here.}
@@ -101,7 +145,7 @@ In addition to this information, it includes many of the module or object declar
 Finally, there are several global constants or other important information located in the header. One of the most important is the global \textbf{CARD\_OK}. This global can toggle wether an SD card is detected and allow the system to continue operation regardless of whether one is detected or not. While this is not necessary, If an SD card is not inserted, it is recommended to set this value to 0. Also the names of the states for the state machine are enumerated here, as well as the current state and next state. This allows functions from the button interrupts, for example, to change the value of next state even while it is in a separate file. The entire header file can be found in Listing~\ref{code:header} on Page~\pageref{code:header}.
 
 \subsection{Main}
-Based on a Blynk Example sketch for the ESP8266 wifi chip on the wifi shield, the main loop of the software function is designed to be as simple as possible. As with all Arduino main functions, there is a \textbf{setup} function and a \textbf{loop} function. The full main code is found in Listing~\ref{code:main} on Page~\pageref{code:main}. 
+Based on a Blynk Example sketch for the ESP8266 WiFi chip on the WiFi shield, the main loop of the software function is designed to be as simple as possible. As with all Arduino main functions, there is a \textbf{setup} function and a \textbf{loop} function. The full main code is found in Listing~\ref{code:main} on Page~\pageref{code:main}. 
 
 
 \subsubsection{The Setup}
@@ -287,7 +331,7 @@ One can also use \textbf{PrintDateandTimeVerbose()} For additional information a
 
 \subsection{Future Software Directions}
 
-As aforementioned in the Blynk Disclaimer is the wifi, while implemented in hardware, was not fully able to be utilized. The ability for the wifi to be connected via a soft access point so that the end user doesn't have to do any coding is also a final product must-have. Additionally, the wifi had data transfer problems, and would freeze up the state machine. Fixing that is a top priority in future endeavors, and there are a couple possible solutions to help this problem:
+As aforementioned in the Blynk Disclaimer is the WiFi, while implemented in hardware, was not fully able to be utilized. The ability for the WiFi to be connected via a soft access point so that the end user doesn't have to do any coding is also a final product must-have. Additionally, the WiFi had data transfer problems, and would freeze up the state machine. Fixing that is a top priority in future endeavors, and there are a couple possible solutions to help this problem:
 \begin{itemize}
 	\item Take other functions out of the main loop
 	\item Extend timing periods for the state machine
@@ -296,17 +340,43 @@ As aforementioned in the Blynk Disclaimer is the wifi, while implemented in hard
 	\item Look into other alternatives to Blynk, which may require more work or an html page
 \end{itemize}
 
-Another issue is the button triggers. Even with a debouncing circuit, there is still a significant amount of noise from the interrupts. Potentially this response could be better debounced by simply polling the levels, since that is the quickest that the information could be acted on. Additionally, freeing up external interrupts, as mentioned, could solve some of the wifi connection problems. 
-%speaker
+Another issue is the button triggers. Even with a debouncing circuit, there is still a significant amount of noise from the interrupts. Potentially this response could be better debounced by simply polling the levels, since that is the quickest that the information could be acted on. Additionally, freeing up external interrupts, as mentioned, could solve some of the WiFi connection problems. 
+
+Additionally, we would like to add the library for a speaker, once available, and have different files or tones associated with different states:
+\begin{itemize}
+	\item A power up sound for iAmHere
+	\item A mild bong for gentleReminder
+	\item A strong buzzer sound or words for strongReminder
+	\item A pleasant wind down note for thankYou
+\end{itemize}
+
+Since the thank you state song should be at least somewhat pleasant, we think we may want to have mp3s saved to the device to play on a small speaker. This could be something the end user has the ability to upload to the same SD card that is logging the data. 
+
+Additionally, we tried to keep a consistent serial DEBUG that was separate from the Basic Serial, in case someone wanted to monitor on Serial2, for instance (currently it is set to serial 1 and there is no difference between DEBUG.println and Serial.println). In future versions, however, we'd like to be able to comment out the DEBUG definition and have those prints not work, which would require wrapping those print statements in an if statement (may attempt to implement in Notepad ++ with a find and replace of some sort).
 
 \section{System Setup Instructions}
 % put the libraries of the arduino tab into the arduino documents folder thingy
-\section{Future Improvements}
+The git hub repository where all of the code written for arduino is kept, and can be cloned using \href{https://github.com/langley2119/Embedded_System_SmartWalker.git}{this address}. 
 
+
+To begin using the software, one needs to load the libraries into the Arduino IDE. The IDE has a specific \textsl{libraries} folder, likely in Documents/Arduino/ that must include the libraries. Rather than adding all of the libraries from the Library Manager or trying to add zip files individually, we recommend \textbf{Copy} and \textbf{Pasting} the libraries/ Folder included in the repository directly to the Arduino folder. This saves a lot of time searching for the exact libraries. Additionally, one can now open the code from where the user has the repository and make all his/her changes there if desired, for easier file management.  
+
+From here one should be able to select the mega 2560 as the desired board to build on and find the correct COM port and upload successfully. The code can be easily modified in the IDE and this is where we primarily did our development.
+
+\subsection{Serial Communication and Debugging}
+To debug certain steps, the development team would often send outputs - such as the state or when a specific loop had been entered - to the serial output. This can easily be read from the Serial Monitor inside of the IDE, and gives some sense of what is going on in the system. This was immensely helpful as we continued developing, and some of the more important messages we have left un-commented, so the user can see the progression. However, there are many messages that have been commented such as the sensor outputting distance, which a future developer is free to un-comment and check. 
+
+\subsection{A note when working with Libraries and the Mega}
+Unfortunately, the pinouts on the Arduino Uno and Arduino Mega are very different, and most libraries are written for the Uno. This means that a library that may work flawlessly on the Uno has partial or no functionality on the Mega. The development team would often have to change pins in the system (such as the primary SDA and SCL pins, and the SPI pins) to get the system to function correctly. The transition from Uno to Mega often required pinout information found on the Arduino websites.
+
+It is therefore recommended to get the library and basic functionality desired starting on an Uno, and then migrate the technology to the Mega. This can ease a significant amount of frustration as a working system has already been established. 
+
+\section{Conclusion}
+The smart walker project as it sits currently is a significant step in the right direction to help elderly people who are required to use a walker. It is, however, by no means finished. With the WiFi and the speaker notable omissions, there is still a non-trivial amount of work left on the project to complete this stage of the prototype. From here, we hope that future developers can design a more complete PCB layout, design a custom housing, and make this product reach market shelves.
 
 \section{Appendices}
-
-\subsection{Unaltered Code}
+Listed below is the entire code used in the project, as well as links to many of the components and other helpful information. 
+\subsection{Full Code}
 
 \Cpp{Header File} {code:header} {../ESP8266_Shield_example_minus_connman/definitions.h}
 
@@ -324,8 +394,16 @@ Another issue is the button triggers. Even with a debouncing circuit, there is s
 
 \subsection{URL References}
 \begin{itemize}
+	\item Git Hub Repository: \url{https://github.com/langley2119/Embedded_System_SmartWalker.git}
 	\item BLYNK Main Document: \url{https://docs.blynk.cc/}
-	\item LED Hookup Guide: \url{https://learn.sparkfun.com/tutorials/lp55231-breakout-board-hookup-guide/all}
+	\item LED Hookup Guide:  \url{https://learn.sparkfun.com/tutorials/lp55231-breakout-board-hookup-guide/all}
+	\item Upper Sensor (current version) \url{https://www.sparkfun.com/products/14539}
+	\item Lower Sensor \url{https://www.sparkfun.com/products/13968}
+	\item microSD breakout \url{https://www.sparkfun.com/products/13743}
+	\item LED Breakout Driver: \url{https://www.sparkfun.com/products/13884}
+	\item RTC Module (retired): \url{https://www.sparkfun.com/products/retired/14642}
+	\item RTC Module (QWIIC compatible and current) \url{https://www.sparkfun.com/products/14558}
+	\item QWIIC Adapter: \url{https://www.sparkfun.com/products/14495}
 \end{itemize}
 
 
