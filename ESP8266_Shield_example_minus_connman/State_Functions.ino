@@ -15,8 +15,7 @@ void StateMachine()
     DEBUG.print("Current State: "); DEBUG.println(next_state); 
     counter = 0; 
   }
-
-
+  // to account for if next_state was changed during the time interval, we switch right here
   current_state = next_state; 
   
   switch(current_state) {
@@ -43,9 +42,6 @@ void StateMachine()
       break;     
   }
 
-
-   
-  //Blynk.virtualWrite(V5, (millis()/1000) % 10); 
 }
 
 

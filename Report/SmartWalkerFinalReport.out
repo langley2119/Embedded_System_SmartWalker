@@ -1,0 +1,24 @@
+\BOOKMARK [1][-]{section.1}{Project Summary}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Objectives}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Hardware Design}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{Hardware Platform}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.2}{Schematic and Parts Used}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Software Design}{}% 6
+\BOOKMARK [2][-]{subsubsection.3.0.1}{Blynk Disclaimer}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Timing}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{Header file definitions.h}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.3}{Main}{section.3}% 10
+\BOOKMARK [3][-]{subsubsection.3.3.1}{The Setup}{subsection.3.3}% 11
+\BOOKMARK [3][-]{subsubsection.3.3.2}{The Loop}{subsection.3.3}% 12
+\BOOKMARK [2][-]{subsection.3.4}{State Machine}{section.3}% 13
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Timing and Sequence Management in States}{subsection.3.4}% 14
+\BOOKMARK [2][-]{subsection.3.5}{Sensors}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.6}{LEDs}{section.3}% 16
+\BOOKMARK [2][-]{subsection.3.7}{Real Time Clock Module}{section.3}% 17
+\BOOKMARK [2][-]{subsection.3.8}{Micro SD Card and Data Logging}{section.3}% 18
+\BOOKMARK [2][-]{subsection.3.9}{Future Software Directions}{section.3}% 19
+\BOOKMARK [1][-]{section.4}{System Setup Instructions}{}% 20
+\BOOKMARK [1][-]{section.5}{Future Improvements}{}% 21
+\BOOKMARK [1][-]{section.6}{Appendices}{}% 22
+\BOOKMARK [2][-]{subsection.6.1}{Unaltered Code}{section.6}% 23
+\BOOKMARK [2][-]{subsection.6.2}{URL References}{section.6}% 24

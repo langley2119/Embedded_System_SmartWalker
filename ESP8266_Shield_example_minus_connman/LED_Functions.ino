@@ -46,11 +46,11 @@ void StrongReminderLED(int * counter)
     case 2: 
         ledChip.SetChannelPWM(redLED1,0);  // turn off
         ledChip.SetChannelPWM(redLED2,0);  // turn off
-        ledChip.SetChannelPWM(redLED3,0);  // turn on
+        ledChip.SetChannelPWM(redLED3,0);  // turn off
 		    ledChip2.SetChannelPWM(redLED1,0);  // turn off
         ledChip2.SetChannelPWM(redLED2,0);  // turn off
-        ledChip2.SetChannelPWM(redLED3,0);  // turn on
-        *counter = 0; // by setting it to -1 we get 0 the next time it comes around 
+        ledChip2.SetChannelPWM(redLED3,0);  // turn off
+        *counter = 0; // by setting it to 0 we get -1 the next time it comes around 
       break;
   }
 

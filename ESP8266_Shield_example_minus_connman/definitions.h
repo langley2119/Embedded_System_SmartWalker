@@ -1,9 +1,6 @@
 #ifndef SMART_WALKER_DEF_H
 #define SMART_WALKER_DEF_H
 
-
-
-
 /************* FILE Inclusions ***************/
 //#include <queue.h>
 //#include <ESP8266WiFi.h>
@@ -14,7 +11,6 @@
 // LEDS
 
 #include <lp55231.h>
-
 
 // for the wifi manager
 //#include <WiFiManager.h> // Wifi configuration manager used thanks to tazpu
@@ -51,6 +47,16 @@
 #define RIGHT_HANDLE_BUTTON 3
 
 
+/*
+* While these button inputs are true for the system, the buttons are actually in different 
+* pin headers to allow for the debouncing circuit to route to these pins. These pins are: 
+* A0 -> To Left Handle Button
+* A2 -> From Left Handle Button
+* A1 -> To Right Handle Button
+* A3 -> From Right Handle Button. 
+*/
+
+
 #define PIR_DOUT 6  // PIR digital output on D2
 
 // used In SD_SAVE_FILE
@@ -65,9 +71,7 @@ const uint8_t cardDetect = 9;
 * MEGA_P52 -> SD_SCK
 */
 
-
 /************ MODULES AND CLASSS DEFINITIONS **********/
-
 // module stuff
 RV1805 rtc;
 File fd;
@@ -98,8 +102,6 @@ enum State{waiting, iAmHere, gentleReminder, strongReminder, thankYou, inUse};
 enum State current_state;
 enum State volatile next_state; // so that it can be changed in the interrupt callbacks
 
-
-
 /***************** LED CHANNELS ******************/ 
 int greenLED1 = 0;
 int blueLED1 = 1;
@@ -110,7 +112,5 @@ int blueLED3 = 5;
 int redLED1 = 6;
 int redLED2 = 7;
 int redLED3 = 8;
-
-
 
 #endif // SMART_WALKER_DEF_H

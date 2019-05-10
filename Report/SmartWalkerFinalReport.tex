@@ -1,0 +1,324 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{graphicx} % new way of doing eps files
+\usepackage{listings} % nice code layout
+\usepackage[usenames]{color} % color
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{graphgray}{gray}{0.7}
+\definecolor{ans}{rgb}{1,0,0}
+\definecolor{blue}{rgb}{0,0,1}
+% \Verilog{title}{label}{file}
+%for general listings, white on the inside
+\lstset{language=C++}
+\lstset{rulecolor=\color{blue}}
+\lstset{linewidth=\textwidth}
+\lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
+\lstset{frame=tb}
+%\lstset{literate={\ \ }{{\ }}1}
+\lstset{basicstyle = \small}
+\lstset{breaklines=true}
+\lstset{postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}}
+
+\newcommand{\Cpp}[3]{
+  \lstset{language=C++}
+  \lstset{backgroundcolor=\color{listinggray},rulecolor=\color{blue}}
+  \lstset{linewidth=\textwidth}
+  \lstset{commentstyle=\textit, stringstyle=\upshape,showspaces=false}
+  \lstset{frame=tb}
+  \lstset{literate={\ \ }{{\ }}1}
+  \lstset{basicstyle = \small}
+  \lstset{breaklines=true}
+  \lstset{postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}}
+  \lstinputlisting[caption={#1},label={#2}]{#3}
+}
+
+
+\author{Jackson Farley, Ellie Langley, and Erik Leinen}
+\title{Smart Walker Project}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+\listoffigures
+
+
+\section{Project Summary}
+This device is implemented on a smart walker and determines whether the walker is being used and at what time. When not in use, the device gently reminders the user to use the walker, and when the gentle reminder fails, the harsh reminder is enacted. As more and more elderly use walking aids, and as the elderly population is more susceptible to injurious falls, it is difficult for an elderly person to achieve independence safely. This device will allow the elderly who require walking aids to live by themselves safely.
+
+This device utilizes sensors to detect human presence on the upper and lower part of the walker. Depending on whether a human presence has been detected from the lower sensor, the upper sensor will then take a measurement. If the upper sensor has also taken a measurement with a proximal signal, then the device will output a “gentle reminder” by lighting the LED modules on the walker a solid yellow. If the walker has still not been used, then the device will output a “strong” reminder by flashing the LEDs red. When the buttons on the walker are pressed, the walker will go to an “in use state”. A time stamp will be taken using a clock module and output to the SD card module. 
+
+Most of the electrical parts for the smart walker have been placed within a plastic, red Sparkfun box, with holes drilled for wires which need to go outside the box. The two push buttons have been placed on the handlebars of the walker. The device is powered by one 9V battery.
+
+\subsection{Objectives}
+The end objectives of this project are listed below. Some of the objectives are outside the scope of the immediate project, but the design process took place with all of these in mind, so they are all listed here. The final item on the list was specific to our implementation, and is therefore marked separately. 
+\begin{itemize}
+	\item \textbf{Accurately Analyze Human Interaction with the Walker}: Use two sensors to detect the presence of the user effectively, as well as have two buttons that detect whether the user is gripping the handles. 
+	\item \textbf{Accurate Time Recording}: Have a real-time clock able to keep time even when the system is powered off
+	\item \textbf{Notification}: Succesfully notify users when they are not using the walker and should. To do this we must have sufficient display capability and accurate analysis as explained above. The item should also be able to notify others if there is an emergency.
+	\item \textbf{Tracking}: The item should be able to record when the user has begun using the walker and keep that information for later analysis. Potentially an end objective would be creating a use-profile, so a doctor could be notified if there were significant deviations from this 
+	\item \textbf{Portability}: An older person should be able to transport this as easily as his/her standard walker. It should easily fit in the back of a small car and not add to the bulk of the system
+	\item \textbf{Low Cost}: This system, when fully deployed, should be inexpensive (under \$100, ideally under \$50)
+	\item \textbf{Modularity}: The system should attach to the user's existing walker with very little setup and no power tools. 
+	\item \textbf{Low Power}: The system should continue to work for at least 24 hours of normal operation on a single charge. 
+	\item[\textasteriskcentered] \textbf{Relative Hardware Independence}: The code should work with potential changes in sensor or code with as little alteration as possible, therefore the functions and the objects to be interchangeable with a small amount of work where possible. 
+\end{itemize}
+
+\section{Hardware Design}
+
+\subsection{Hardware Platform}
+The Arduino Mega 2560 was selected as the hardware platform, as the sensors purchased for the project best interface with the Arduino IDE, and this is what the previous developers had been using and was readily available for low cost. Additionally, the added capability over the Arduino Uno gave greater flexibility and resources for computing once our system became much larger.  
+
+Other useful features include: 
+\begin{itemize}
+	\item Quick Up-Time: The Mega, once turned on, is ready in a matter of seconds, which allows it to record initial use and reduce potential annoyance to users. While it is designed to be on all the time, it is also good to know that the device won't break or fry if there is a sudden loss of power. 
+	\item Lower Power: The Beaglebone, while much more capable than the Mega, consumed much more power than the mega, meaning it would require a heavy and expensive battery to continue operation for the objective amount of time. 
+	\item Configurable Interrupts: the buttons implemented in this project must be configured as interrupts for the purpose of the device to be achieved. 
+	\item I$^2$C: many sensors communicate via this protocol, including some of the QWIIC enabled components by Sparkfun like the Real-Time Clock and the RF sensor. 
+\end{itemize}
+
+\subsection{Schematic and Parts Used}
+
+\section{Software Design}
+The software for this project was all written in the arduino IDE. Much of it was taken from example sketches, specifically the setup of sensors and peripherals. The libraries for all of the main functions are included in the libraries/ folder in the GitRepository. The software design main loop was built with the idea of being compatible with an app later on for monitoring. This app was furnished with Arduino compatibilty by Blynk, an Internet of Things (IoT) company based on creating solutions that the user can control from his/her phone. The main blynk documentation can be found by clicking \href{https://docs.blynk.cc/}{here.}
+
+To go along with the modular approach to this design, the discrete components of the system are broken up into different files, unified by a common header \textit{definitions.h}.
+
+\subsubsection{Blynk Disclaimer}
+ Currently, the Blynk website uploading and writing to the phone breaks the system and freezes it, so that functionality is currently under investigation. In the meantime, that Blynk functionality is commented out. 
+
+\subsection{Timing}
+Before getting too deep into the code, it is important to bring up the issue of timing. Rather than using delays that could tie down the microcontroller, it would be far better to use timers that run specific functions at certain intervals. For this reason we use a \textbf{BlynkTimer}, something very similar to a simple timer created to be compatible with the Blynk system. This timer is an object that can have up to 10 different intervals and callbacks that can be set with the \textbf{setInterval()} command. The developer has the option of setting the interval, which should be long enough to not tie down the microcontroller, but short enough to allow for the accurate polling of the sensors. 
+
+It's also important to note that in the code, not every sequence has to be complete or run every time the function is called. We add static integers and case statements to have the desired functionality without over-burdening the system. These are explained in detail as they arise. 
+
+\subsection{Header file definitions.h}
+The header file contains all of the information that applies to multiple files. This allows for the functions to be more readable and less cluttered if things are moved around. It also includes all other file inclusions that are necessary, globals, and pin declarations. Ideally, if one person was looking to hook up all the wires in the system correctly, they would only need to look at the header file. 
+
+In addition to this information, it includes many of the module or object declarations that are used later on in the programs. These include things like the ledChip declaration. It is important to note that the ledChip and ledChip2 objects that are declared have numbers associated with them. These are the specific I$^2$C addresses that allow them to operate separately from one another. If one wants more information on this specifically, they can look at the led chip driver hookup guide \href{https://learn.sparkfun.com/tutorials/lp55231-breakout-board-hookup-guide/all}{here.} 
+
+Finally, there are several global constants or other important information located in the header. One of the most important is the global \textbf{CARD\_OK}. This global can toggle wether an SD card is detected and allow the system to continue operation regardless of whether one is detected or not. While this is not necessary, If an SD card is not inserted, it is recommended to set this value to 0. Also the names of the states for the state machine are enumerated here, as well as the current state and next state. This allows functions from the button interrupts, for example, to change the value of next state even while it is in a separate file.
+
+\subsection{Main}
+Based on a Blynk Example sketch for the ESP8266 wifi chip on the wifi shield, the main loop of the software function is designed to be as simple as possible. As with all Arduino main functions, there is a \textbf{setup} function and a \textbf{loop} function. The full main code is found in Listing~\ref{code:main} on Page~\pageref{code:main}. 
+
+
+\subsubsection{The Setup}
+
+The setup function is executed once at the beginning, and then the loop function is run indefinitely. The setup is shown below in Listing~\ref{code:mainsetup}. Since the main loop hasn't been entered, delays are allowed here to make sure that Serial ports are set and any protocol or setup is taken care of correctly. All of the delays are kept small, however, to keep the Up-Time as short as possible, because there is a fair bit of handshaking that has to happen. Additionally, a lot of the specifics for the setup are kept out of this loop and are done in the individual files. Each of these functions in their entirety are in the Appendices in Unaltered Code. 
+
+\begin{lstlisting}[caption={The Main Setup}, label={code:mainsetup}]
+void setup()
+{
+	// Debug console
+	Serial.begin(9600);
+	
+	delay(10);
+	
+	// Set ESP8266 baud rate
+	EspSerial.begin(ESP8266_BAUD);
+	delay(10);
+	
+	// setting up function calls via the timer 
+	// first argument is the duration between events in milliseconds 
+	// up to 16 timers per timer object. 
+	// max data sending rate of 10 values per second
+	timer.setInterval(STATE_MACH_INTERVAL,StateMachine); // this is the timer that calls the state machine every STATE_MACH_INTERVAL miliseconds
+	timer.setInterval(LED_INTERVAL,LEDMain); // can be on a separate time from the state machine if flashes must occur slower or faster 
+	
+	// WIFI Manager Attempts 
+	// one-time thing: 
+	//wifiManager.resetSettings(); 
+	// setting up the auto connnect using WiFiManager Library
+	//wifiManager.setConfigPortalTimeout(180); // waits 3 minutes and then will shut off. 
+	//wifiManager.autoConnect("RemindME Walker","remindme"); 
+	
+	SetupLEDs(); 
+	SetupRTCandSD();   
+	SetupSensors(); 
+	SetupButtonInterrupts(); 
+	//Blynk.begin(auth, wifi, ssid, pass);
+	SetupLEDDriveCurrents(); 
+	ClearLED(); 
+	DEBUG.println("Setup Complete!"); 
+}
+\end{lstlisting}
+
+
+\subsubsection{The Loop}
+The loop, as specified, is shown below in Listing~\ref{code:mainloop}. As one can see, it has been kept as simple as possible. Ideally, only the timer would be run in the main loop, however, there were some functions that had to occur frequently: the updates from the real-time clock module (RTC) and monitoring if the SD card is currently inserted. 
+
+\begin{lstlisting}[caption={The Main Loop}, label={code:mainloop}]
+void loop()
+{
+	//Blynk.run();
+	timer.run(); 
+	if (rtc.updateTime() == false) //Updates the time variables from RTC
+	{
+		Serial.print("RTC failed to update");
+	}
+	// periodically checking 
+	// currently disabled to prevent the SD card from preventing other operation of the device.
+	
+	// FIXME: maybe add a parameter that enables easier checking and initialization if possible
+	if (!digitalRead(cardDetect))
+	{
+		initializeCard(); 
+	}
+
+}
+\end{lstlisting}
+
+
+\subsection{State Machine}
+This state machine is based off of the Activity Diagram shown in Figure %find the figure number and insert the figure 
+The state machine function, called every 100 ms as specified in \textit{definitions.h}, is shown in Listing~\ref{code:statemachcallback}. Like most state machines, this is implemented using a case statement. Each state has a dedicated function that carries out the operations of that state, whether it is monitoring, displaying LED output, or logging data. The full \textit{State\_Functions.ino} file can be found in Listing~\ref{code:StateMach} on Page~\pageref{code:StateMach}. 
+
+\begin{lstlisting}[caption={The State Machine Callback Function}, label={code:statemachcallback}]
+void StateMachine()
+{ 
+	static int counter = 0; 
+	static unsigned long time_elapsed = 0; 
+	counter = counter + 1;
+	time_elapsed = counter * STATE_MACH_INTERVAL;  
+	
+	if(next_state != current_state) {
+		//DEBUG.println("State change! Counter Reset"); 
+		DEBUG.print("Current State: "); DEBUG.println(next_state); 
+		counter = 0; 
+	}
+	// to account for if next_state was changed during the time interval, we switch right here
+	current_state = next_state; 
+	
+	switch(current_state) {
+		case waiting: 
+		next_state = WaitingState(time_elapsed,&counter); 
+		break; 
+		case iAmHere: 
+		next_state = IAmHereState(time_elapsed,&counter); 
+		break; 
+		case gentleReminder: 
+		next_state = GentleReminderState(time_elapsed,&counter); 
+		break;
+		case strongReminder:
+		next_state = StrongReminderState(time_elapsed,&counter); 
+		break; 
+		case thankYou: 
+		next_state = ThankYouState(time_elapsed,&counter); 
+		break;
+		case inUse:
+		next_state = InUseState(time_elapsed,&counter);
+		break;
+		default: 
+		DEBUG.println("Error occured in the state diagram."); 
+		break;     
+	}
+
+}
+\end{lstlisting}
+
+Each of the states is elaborated a little further here below: 
+
+\begin{itemize}
+	\item \textbf{waiting}: the initial state, this is where the walker is scanning for human presence on either sensor. It checks the lower sensor every time, since it is a constant digital output on the PIR. The upper sensor is only checked every 2 seconds by comparison. 
+	\item \textbf{iAmHere}: this state is gone to when either sensor detects some movement in front of it. The output is a white LED powerup sequence that reminds the user that it is there to be used. If a "proximal" signal, meaning the user could reach out and grab the walker, is detected from the upper sensor, the system moves to gentle reminder. 
+	\item \textbf{gentleReminder}: this state is a sequence of repeating yellow lights in an effort to have the user to grab the walker without a sterner reminder. If this state isn't observed, the state can either go to strongReminder if we believe the user is ignoring the walker or still near, or the state can go to waiting if the user hasn't moved. 
+	\item \textbf{strongReminder}: this state is a stronger flashing of red lights, eventually to be accompanied with an alarm that strongly suggests the user use the walker. If this warning is not observed after some amount of time, or the user has moved out of the way, then the state machine goes back to waiting. 
+	\item \textbf{thankYou}: this state is triggered when one of the handles has been grabbed. It can only be reached from one of the interrupt handlers from the button external interrupts. It goes through a pleasant green light sequence and records the time of the user grabbing the walker to the SD card. After this has been completed and the sequence ends, the state machine always goes to inUse. 
+	\item \textbf{inUse}: this state is used when either of the buttons is actively being pressed. If the person takes both hands off of the walker, the system goes to gentleReminder to remind the user to put their hands on the walker. 
+\end{itemize}
+
+%talk about the timing stuff. 
+\subsubsection{Timing and Sequence Management in States}
+Since we use the timer to call the state machine function, the scope of the state machine is not passed any information about what time it is, or what state is was in earlier. Due to reccomendations about avoiding the millis() function, static integers, which retain their value when the function returns, were used to remedy the problem. There is a static counter variable \textsl{counter} that increments by 1 each time the function is called. And since the timer interval is known, one can calculate how much time has elapsed since we entered the state. From there, the \textsl{time\_elapsed} is passed to the corresponding state functions. The counter is also passed in case the function resets the counter at any point. This is used in waitingState and inUse specifically to avoid getting massive counter integers that could wrap around. Otherwise, it's not currently muched used, but gives a lot of flexibility about how to manage time. The same basic time management scheme is used in the LED state to allow for sequences to occur in the same state. If interested to see the exact implementation, it is provided in the \textit{LED\_Functions.ino} file in Listing~\ref{code:LEDFunctions} with the counter and function calls in the \textit{LED\_Driver.ino} file in Listing~\ref{code:LEDDriver}. 
+
+It is important to note at this point that whenever the state changes, \textbf{the counter is reset to 0}. 
+
+\subsection{Sensors}
+The sensor setup and functionality is largely taken care of the libraries that have been included. For the software, the sensors are simply black boxes, with functionality shown below:
+\begin{itemize}
+	\item Lower Sensor: detects motion and outputs a 1 if detected. outputs a 0 otherwise upon measurement. 
+	\item Upper Sensor: detects distance. Outputs 2 if the user could grab the walker (about 1 meter away), outputs a 1 if the person is nearby (about 1-2.5 meters), and outputs 0 otherwise. 
+\end{itemize}  
+The RF sensor and OpenPIR sensor are configured via the functions to do exactly this. In addition, any setup necessary should happen in the \textbf{SetupSensors()} function called in the setup loop.
+
+In addition, the buttons are technically sensors, so they have been included in this file. The interrupts are enabled in the setup as well, and then in the callback they set the next state to \textsl{thankYou}. The entire file is found in Listing~\ref{code:SensorFunctions} on Page~\pageref{code:SensorFunctions}
+
+\subsection{LEDs}
+The LEDs are broken up into two files: one that is entirely modular and independent of the LEDs used called \textit{LED\_Drivers.ino} (Listing~\ref{code:LEDDriver})and one that is hardware dependent and called \textit{LED\_Functions.ino} (Listing~\ref{code:LEDFunctions}). The independent file is formatted very similarly to the State Machine Callback, as it requires the same basic functionality. It calls state-specific functions that will do the sequences described above. Then the hardware dependent file goes and implements these. Depending on the time elapsed, the LEDs could be turning on or off, so there are sequence steps that are iterated through using a case statement. A simple example of one is reproduced below in Listing~\ref{ledfunc}. As one can see, depending on the counter value which is static like earlier, the LEDs will either turn on (by specifying a duty cycle of 50 out of 255) or turn off (by specifying a duty cycle of 0) and reset the counter to begin the cycle again. The duty cycle is much less than the maximum to save power, and since that brightness was found to be sufficient in indoor situations. 
+
+\begin{lstlisting}[caption={The Strong Reminder LED function}, label={code:ledfunc}]
+void StrongReminderLED(int * counter)
+{
+
+	switch(*counter){// this switch statement allows the same function to be called at a timer instance but have different results. 
+		case 1: 
+		ledChip.SetChannelPWM(redLED1,50);  // turn on
+		ledChip.SetChannelPWM(redLED2,50);  // turn on
+		ledChip.SetChannelPWM(redLED3,50);  // turn on
+		ledChip2.SetChannelPWM(redLED1,50);  // turn on
+		ledChip2.SetChannelPWM(redLED2,50);  // turn on
+		ledChip2.SetChannelPWM(redLED3,50);  // turn on
+		break;
+		case 2: 
+		ledChip.SetChannelPWM(redLED1,0);  // turn off
+		ledChip.SetChannelPWM(redLED2,0);  // turn off
+		ledChip.SetChannelPWM(redLED3,0);  // turn off
+		ledChip2.SetChannelPWM(redLED1,0);  // turn off
+		ledChip2.SetChannelPWM(redLED2,0);  // turn off
+		ledChip2.SetChannelPWM(redLED3,0);  // turn off
+		*counter = 0; // by setting it to 0 we get 1 the next time it comes around 
+		break;
+	}
+
+}
+
+\end{lstlisting}
+
+\subsection{Real Time Clock Module}
+
+\subsection{Micro SD Card and Data Logging}
+%talk about the way it is recorded. 
+
+\subsection{Future Software Directions}
+% talk about the need for some windowing potentially and a potential bug with the buttons? Maybe switch to polling? 
+
+%take everything else out of the main loop, could solve wifi problem
+
+%speaker
+
+\section{System Setup Instructions}
+
+\section{Future Improvements}
+
+
+\section{Appendices}
+
+\subsection{Unaltered Code}
+
+\Cpp{Header File} {code:header} {../ESP8266_Shield_example_minus_connman/definitions.h}
+
+\Cpp{Main Arduino Code} {code:main} {../ESP8266_Shield_example_minus_connman/ESP8266_Shield_example_minus_connman.ino}
+
+\Cpp{The State Machine and Associated Functions} {code:StateMach} {../ESP8266_Shield_example_minus_connman/State_Functions.ino}
+
+\Cpp{The LED Drivers} {code:LEDDriver} {../ESP8266_Shield_example_minus_connman/LED_Drivers.ino}
+
+\Cpp{The LED Functions} {code:LEDFunctions} {../ESP8266_Shield_example_minus_connman/LED_Functions.ino}
+
+\Cpp{The SD card and RTC functionality} {code:SDandRTC} {../ESP8266_Shield_example_minus_connman/SD_save_files2.ino}
+
+\Cpp{The Sensor Functions} {code:SensorFunctions} {../ESP8266_Shield_example_minus_connman/Sensor_Functions.ino}
+
+
+
+\subsection{URL References}
+\begin{itemize}
+	\item BLYNK Main Document: \url{https://docs.blynk.cc/}
+	\item LED Hookup Guide: \url{https://learn.sparkfun.com/tutorials/lp55231-breakout-board-hookup-guide/all}
+\end{itemize}
+
+
+
+\end{document}

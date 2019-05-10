@@ -72,37 +72,6 @@ void SetupRTCandSD()
   initializeCard();
 }
 
-/* Not necessary as acting as a supporting fle 
-
-void loop() 
-{
-  if (rtc.updateTime() == false) //Updates the time variables from RTC
-  {
-    Serial.print("RTC failed to update");
-  }
-
-//  String currentDate = rtc.stringDateUSA(); //Get the current date in mm/dd/yyyy format (we're weird)
-//  String currentTime = rtc.stringTime(); //Get the time
-//  Serial.print(currentDate);
-//  Serial.print(" ");
-//  Serial.println(currentTime);
-//  calculateWeekday;
-  
-  if (!digitalRead(cardDetect))
-  {
-    initializeCard();
-  }
-
-  if (Serial.available() > 0)
-  {
-    readByte();
-//    printDateAndTime();    
-  }
-
-//  delay(1000);
-}
-
-*/
 
 int initializeCard(void)
 {
