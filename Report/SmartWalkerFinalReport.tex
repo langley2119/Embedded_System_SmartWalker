@@ -2,7 +2,8 @@
 \usepackage{fullpage}
 \usepackage{hyperref}
 \usepackage{graphicx} % new way of doing eps files
-\graphicspath{images/}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{listings} % nice code layout
 \usepackage[usenames]{color} % color
 \definecolor{listinggray}{gray}{0.9}
@@ -55,21 +56,22 @@ Most of the electrical parts for the smart walker have been placed within a plas
 \subsection{Objectives}
 The end objectives of this project are listed below. Some of the objectives are outside the scope of the immediate project, but the design process took place with all of these in mind, so they are all listed here. The final item on the list was specific to our implementation, and is therefore marked separately. 
 \begin{itemize}
-	\item \textbf{Accurately Analyze Human Interaction with the Walker}: Use two sensors to detect the presence of the user effectively, as well as have two buttons that detect whether the user is gripping the handles. 
-	\item \textbf{Accurate Time Recording}: Have a real-time clock able to keep time even when the system is powered off
-	\item \textbf{Notification}: Succesfully notify users when they are not using the walker and should. To do this we must have sufficient display capability and accurate analysis as explained above. The item should also be able to notify others if there is an emergency.
+	\item \textbf{Accurately Analyze Human Interaction with the Walker}: Use two sensors to detect the presence of the user effectively, as well as have two buttons that detect whether the user is gripping the handles
+	\item \textbf{Accurate Time Recording}: Have a real-time clock that is able to keep time even when the system is powered off
+	\item \textbf{Notification}: Succesfully notify users when they are not using the walker and should. To do this we must have sufficient display capability and accurate analysis as explained above. The item should also be able to notify others if there is an emergency
 	\item \textbf{Tracking}: The item should be able to record when the user has begun using the walker and keep that information for later analysis. Potentially an end objective would be creating a use-profile, so a doctor could be notified if there were significant deviations from this 
 	\item \textbf{Portability}: An older person should be able to transport this as easily as his/her standard walker. It should easily fit in the back of a small car and not add to the bulk of the system
 	\item \textbf{Low Cost}: This system, when fully deployed, should be inexpensive (under \$100, ideally under \$50)
 	\item \textbf{Modularity}: The system should attach to the user's existing walker with very little setup and no power tools. 
-	\item \textbf{Low Power}: The system should continue to work for at least 24 hours of normal operation on a single charge. 
-	\item[\textasteriskcentered] \textbf{Relative Hardware Independence}: The code should work with potential changes in sensor or code with as little alteration as possible, therefore the functions and the objects to be interchangeable with a small amount of work where possible. 
+	\item \textbf{Low Power}: The system should continue to work for at least 24 hours of normal operation on a single charge
+	\item[\textasteriskcentered] \textbf{Relative Hardware Independence}: The code should work with potential changes in sensor or code with as little alteration as possible, therefore the functions and the objects to be interchangeable with a small amount of work where possible
 \end{itemize}
 
 \section{Hardware Design}
+Before the current development team inherited the project, there was a significant amount of hardware that was already purchased that we chose from to make this project work. 
 
 \subsection{Hardware Platform}
-The Arduino Mega 2560 was selected as the hardware platform, as the sensors purchased for the project best interface with the Arduino IDE, and this is what the previous developers had been using and was readily available for low cost. Additionally, the added capability over the Arduino Uno gave greater flexibility and resources for computing once our system became much larger.  
+The Arduino Mega 2560 was selected as the hardware platform, as the sensors purchased for the project best interface with the Arduino family due to large libraries. This is also what the previous developers had been using and was readily available for low cost. Additionally, the added capability over the Arduino Uno gave greater flexibility and resources for computing once our system became much larger.  
 
 Other useful features include: 
 \begin{itemize}
@@ -81,8 +83,14 @@ Other useful features include:
 
 \subsection{Schematic}
 
-The schematic is shown below in Figure
+The schematic is shown below in Figure~\ref{fig:schematic}. It depicts the basic elements used and pins used on the Arduino Mega.
 
+\begin{figure} [h]
+	\begin{center}
+		\caption {The Schematic} \label{fig:schematic}
+		\includegraphics[width=\textwidth]{./images/schematic.png}
+	\end{center}
+\end{figure}
 
 The microcontroller used was the Arduino Mega 2560, and the Arduino IDE was used to implement the code onto the board. An Arduino Mega Protoshield was used to make the middle connections needed to reach the same circuit as shown in Figure 1. The proto board had the resistors and capacitors soldered onto it so that a hardware debounce was created for the buttons to give the most accurate readings of the button press. Above the protoshield, was another Wi-Fi shield that will be used in future developments of this product to help implement the ability to store data onto a website that can be accessed by another device. The Arduino is powered by a 9V battery, but in the future, it is desired that a rechargeable battery substitute should be used.
  
@@ -91,7 +99,24 @@ The LED modules used for the display of the states use 3.3V logic in order to op
 One other module that would be nice to include is a speaker, that would output an audible noise for different states to grab the attention of the user. This was not implemented due to time constraints but is a goal of the project sponsor.
 
 \subsection{Parts Used}
-The specific hardware components are listed below. Additionally, the URLs of where many components can be purchased are given in the Appendices. 
+The specific hardware components are listed below. Additionally, the URLs of where many components can be purchased are given in the Appendices. All of these components were combined into a Sparkfun Big Red Box, as shown in Figure~\ref{fig:completeWalker}. The lid off of the box to reveal the internal components is shown in Figure~\ref{fig:lidoff}. The Full Labeled System image is found in Figure~\ref{fig:labels} on Page~\pageref{fig:labels} in the Appendices.  
+
+
+
+\begin{figure} [h!]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\caption {The Inside of the Big Red Box} \label{fig:lidoff}
+		\includegraphics[width=.6\textwidth, angle=270]{./images/uncoveredBox.jpg}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\caption {The Box Mounted onto the Walker} \label{fig:completeWalker}
+		\includegraphics[width=.6\textwidth]{./images/complete_walker.png}
+	\end{minipage}
+
+\end{figure}
 
 \begin{itemize}
 	\item \textbf{Arduino Mega 2650}
@@ -124,8 +149,11 @@ The specific hardware components are listed below. Additionally, the URLs of whe
 	
 \end{itemize}
 
+
+
+
 \section{Software Design}
-The software for this project was all written in the arduino IDE. Much of it was taken from example sketches, specifically the setup of sensors and peripherals. The libraries for all of the main functions are included in the libraries/ folder in the GitRepository. The software design main loop was built with the idea of being compatible with an app later on for monitoring. This app was furnished with Arduino compatibilty by Blynk, an Internet of Things (IoT) company based on creating solutions that the user can control from his/her phone. The main blynk documentation can be found by clicking \href{https://docs.blynk.cc/}{here.}
+The software for this project was all written in the Arduino IDE. Much of it was taken from example sketches, specifically the setup of sensors and peripherals. The libraries for all of the main functions are included in the libraries/ folder in the GitRepository. The software design main loop was built with the idea of being compatible with an app later on for monitoring. This app was furnished with Arduino compatibilty by Blynk, an Internet of Things (IoT) company based on creating solutions that the user can control from his/her phone. The main blynk documentation can be found by clicking \href{https://docs.blynk.cc/}{here.}
 
 To go along with the modular approach to this design, the discrete components of the system are broken up into different files, unified by a common header \textit{definitions.h}.
 
@@ -133,7 +161,7 @@ To go along with the modular approach to this design, the discrete components of
  Currently, the Blynk website uploading and writing to the phone breaks the system and freezes it, so that functionality is currently under investigation. In the meantime, that Blynk functionality is commented out. 
 
 \subsection{Timing}
-Before getting too deep into the code, it is important to bring up the issue of timing. Rather than using delays that could tie down the microcontroller, it would be far better to use timers that run specific functions at certain intervals. For this reason we use a \textbf{BlynkTimer}, something very similar to a simple timer created to be compatible with the Blynk system. This timer is an object that can have up to 10 different intervals and callbacks that can be set with the \textbf{setInterval()} command. The developer has the option of setting the interval, which should be long enough to not tie down the microcontroller, but short enough to allow for the accurate polling of the sensors. 
+Before getting too deep into the code, it is important to bring up the issue of timing. Rather than using delays that could tie down the microcontroller, it would be far better to use timers that run specific functions at certain intervals. For this reason we use a \textbf{BlynkTimer}, something very similar to a simple timer created to be compatible with the Blynk system, and theoretically would prevent timing issues (which it didn't). This timer is an object that can have up to 10 different intervals and callbacks that can be set with the \textbf{setInterval()} command. The developer has the option of setting the interval, which should be long enough to not tie down the microcontroller, but short enough to allow for the accurate polling of the sensors. 
 
 It's also important to note that in the code, not every sequence has to be complete or run every time the function is called. We add static integers and case statements to have the desired functionality without over-burdening the system. These are explained in detail as they arise. 
 
@@ -150,7 +178,7 @@ Based on a Blynk Example sketch for the ESP8266 WiFi chip on the WiFi shield, th
 
 \subsubsection{The Setup}
 
-The setup function is executed once at the beginning, and then the loop function is run indefinitely. The setup is shown below in Listing~\ref{code:mainsetup}. Since the main loop hasn't been entered, delays are allowed here to make sure that Serial ports are set and any protocol or setup is taken care of correctly. All of the delays are kept small, however, to keep the Up-Time as short as possible, because there is a fair bit of handshaking that has to happen. Additionally, a lot of the specifics for the setup are kept out of this loop and are done in the individual files. Each of these functions in their entirety are in the Appendices in Unaltered Code. 
+The setup function is executed once at the beginning or upon reset, and then the loop function is run indefinitely. The setup is shown below in Listing~\ref{code:mainsetup}. Since the main loop hasn't been entered, delays are allowed here to make sure that Serial ports are set and any protocol or setup is taken care of correctly. All of the delays are kept small, however, to keep the Up-Time as short as possible, because there is a fair bit of handshaking that has to happen. Additionally, a lot of the specifics for the setup are kept out of this loop and are done in the individual files. Each of these functions in their entirety are in the Appendices in Full Code. 
 
 \begin{lstlisting}[caption={The Main Setup}, label={code:mainsetup}]
 void setup()
@@ -191,7 +219,7 @@ void setup()
 
 
 \subsubsection{The Loop}
-The loop, as specified, is shown below in Listing~\ref{code:mainloop}. As one can see, it has been kept as simple as possible. Ideally, only the timer would be run in the main loop, however, there were some functions that had to occur frequently: the updates from the real-time clock module (RTC) and monitoring if the SD card is currently inserted. 
+The loop, as specified, is shown below in Listing~\ref{code:mainloop}. As one can see, it has been kept as simple as possible. Ideally, only the timer and Blynk would be run in the main loop, however, there were some functions that had to occur frequently: the updates from the real-time clock module (RTC) and monitoring if the SD card is currently inserted. 
 
 \begin{lstlisting}[caption={The Main Loop}, label={code:mainloop}]
 void loop()
@@ -261,7 +289,7 @@ void StateMachine()
 }
 \end{lstlisting}
 
-Each of the states is elaborated a little further here below: 
+Each of the states, with its correct enumerated name, is elaborated a little further here below: 
 
 \begin{itemize}
 	\item \textbf{waiting}: the initial state, this is where the walker is scanning for human presence on either sensor. It checks the lower sensor every time, since it is a constant digital output on the PIR. The upper sensor is only checked every 2 seconds by comparison. 
@@ -354,9 +382,19 @@ Since the thank you state song should be at least somewhat pleasant, we think we
 
 Additionally, we tried to keep a consistent serial DEBUG that was separate from the Basic Serial, in case someone wanted to monitor on Serial2, for instance (currently it is set to serial 1 and there is no difference between DEBUG.println and Serial.println). In future versions, however, we'd like to be able to comment out the DEBUG definition and have those prints not work, which would require wrapping those print statements in an if statement (may attempt to implement in Notepad ++ with a find and replace of some sort).
 
+
+\section{Results and Lessons Learned}
+Apart from the Wifi Sensor and the Speaker, most of the project worked flawlessly, we sometimes had issues with the button interrupts not working perfectly and the system thinking they were constantly on. This could be fixed with better buttons and possibly switching to polling the buttons. The root cause requires further investigation. 
+
+The state machine and sensors worked very well together, and proved to streamline the thought process. Splitting key components into separate folders also worked very well.  
+
+If we were to start over with this project, we probably would have had a much more formal design process to integrate system components, moving from the Uno to the Mega beforehand. Additionally, we would have started with Blynk from the beginning and not tried to get the wifi shield to work through other methods which took a lot of time. 
+
+
+
 \section{System Setup Instructions}
-% put the libraries of the arduino tab into the arduino documents folder thingy
-The git hub repository where all of the code written for arduino is kept, and can be cloned using \href{https://github.com/langley2119/Embedded_System_SmartWalker.git}{this address}. 
+% put the libraries of the Arduino tab into the Arduino documents folder thingy
+The git hub repository where all of the code written for Arduino is kept, and can be cloned using \href{https://github.com/langley2119/Embedded_System_SmartWalker.git}{this address}. 
 
 
 To begin using the software, one needs to load the libraries into the Arduino IDE. The IDE has a specific \textsl{libraries} folder, likely in Documents/Arduino/ that must include the libraries. Rather than adding all of the libraries from the Library Manager or trying to add zip files individually, we recommend \textbf{Copy} and \textbf{Pasting} the libraries/ Folder included in the repository directly to the Arduino folder. This saves a lot of time searching for the exact libraries. Additionally, one can now open the code from where the user has the repository and make all his/her changes there if desired, for easier file management.  
@@ -403,9 +441,16 @@ Listed below is the entire code used in the project, as well as links to many of
 	\item LED Breakout Driver: \url{https://www.sparkfun.com/products/13884}
 	\item RTC Module (retired): \url{https://www.sparkfun.com/products/retired/14642}
 	\item RTC Module (QWIIC compatible and current) \url{https://www.sparkfun.com/products/14558}
+	\item Enclosure: \url{https://www.sparkfun.com/products/11366}
 	\item QWIIC Adapter: \url{https://www.sparkfun.com/products/14495}
 \end{itemize}
 
-
+\subsection{Labed System}
+\begin{figure} [h]
+	\begin{center}
+		\caption {The Labeled System} \label{fig:labels}
+		\includegraphics[width=\textwidth]{./images/LabeledSystem.png}
+	\end{center}
+\end{figure}
 
 \end{document}

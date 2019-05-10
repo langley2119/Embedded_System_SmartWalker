@@ -1,27 +1,29 @@
-\contentsline {section}{\numberline {1}Project Summary}{2}{section.1}% 
-\contentsline {subsection}{\numberline {1.1}Objectives}{2}{subsection.1.1}% 
-\contentsline {section}{\numberline {2}Hardware Design}{3}{section.2}% 
-\contentsline {subsection}{\numberline {2.1}Hardware Platform}{3}{subsection.2.1}% 
-\contentsline {subsection}{\numberline {2.2}Schematic}{3}{subsection.2.2}% 
-\contentsline {subsection}{\numberline {2.3}Parts Used}{4}{subsection.2.3}% 
-\contentsline {section}{\numberline {3}Software Design}{4}{section.3}% 
-\contentsline {subsubsection}{\numberline {3.0.1}Blynk Disclaimer}{4}{subsubsection.3.0.1}% 
-\contentsline {subsection}{\numberline {3.1}Timing}{5}{subsection.3.1}% 
-\contentsline {subsection}{\numberline {3.2}Header file definitions.h}{5}{subsection.3.2}% 
-\contentsline {subsection}{\numberline {3.3}Main}{5}{subsection.3.3}% 
-\contentsline {subsubsection}{\numberline {3.3.1}The Setup}{5}{subsubsection.3.3.1}% 
-\contentsline {subsubsection}{\numberline {3.3.2}The Loop}{6}{subsubsection.3.3.2}% 
-\contentsline {subsection}{\numberline {3.4}State Machine}{7}{subsection.3.4}% 
-\contentsline {subsubsection}{\numberline {3.4.1}Timing and Sequence Management in States}{8}{subsubsection.3.4.1}% 
-\contentsline {subsection}{\numberline {3.5}Sensors}{8}{subsection.3.5}% 
-\contentsline {subsection}{\numberline {3.6}LEDs}{9}{subsection.3.6}% 
-\contentsline {subsection}{\numberline {3.7}Real Time Clock Module}{9}{subsection.3.7}% 
-\contentsline {subsection}{\numberline {3.8}Micro SD Card and Data Logging}{10}{subsection.3.8}% 
-\contentsline {subsection}{\numberline {3.9}Future Software Directions}{10}{subsection.3.9}% 
-\contentsline {section}{\numberline {4}System Setup Instructions}{11}{section.4}% 
-\contentsline {subsection}{\numberline {4.1}Serial Communication and Debugging}{11}{subsection.4.1}% 
-\contentsline {subsection}{\numberline {4.2}A note when working with Libraries and the Mega}{11}{subsection.4.2}% 
-\contentsline {section}{\numberline {5}Conclusion}{11}{section.5}% 
-\contentsline {section}{\numberline {6}Appendices}{12}{section.6}% 
-\contentsline {subsection}{\numberline {6.1}Full Code}{12}{subsection.6.1}% 
-\contentsline {subsection}{\numberline {6.2}URL References}{39}{subsection.6.2}% 
+\contentsline {section}{\numberline {1}Project Summary}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Objectives}{2}{subsection.1.1}
+\contentsline {section}{\numberline {2}Hardware Design}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}Hardware Platform}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Schematic}{3}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Parts Used}{4}{subsection.2.3}
+\contentsline {section}{\numberline {3}Software Design}{5}{section.3}
+\contentsline {subsubsection}{\numberline {3.0.1}Blynk Disclaimer}{6}{subsubsection.3.0.1}
+\contentsline {subsection}{\numberline {3.1}Timing}{6}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Header file definitions.h}{6}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Main}{6}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}The Setup}{6}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}The Loop}{7}{subsubsection.3.3.2}
+\contentsline {subsection}{\numberline {3.4}State Machine}{8}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}Timing and Sequence Management in States}{9}{subsubsection.3.4.1}
+\contentsline {subsection}{\numberline {3.5}Sensors}{10}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}LEDs}{10}{subsection.3.6}
+\contentsline {subsection}{\numberline {3.7}Real Time Clock Module}{11}{subsection.3.7}
+\contentsline {subsection}{\numberline {3.8}Micro SD Card and Data Logging}{11}{subsection.3.8}
+\contentsline {subsection}{\numberline {3.9}Future Software Directions}{11}{subsection.3.9}
+\contentsline {section}{\numberline {4}Results and Lessons Learned}{12}{section.4}
+\contentsline {section}{\numberline {5}System Setup Instructions}{12}{section.5}
+\contentsline {subsection}{\numberline {5.1}Serial Communication and Debugging}{12}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}A note when working with Libraries and the Mega}{12}{subsection.5.2}
+\contentsline {section}{\numberline {6}Conclusion}{13}{section.6}
+\contentsline {section}{\numberline {7}Appendices}{13}{section.7}
+\contentsline {subsection}{\numberline {7.1}Full Code}{13}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}URL References}{41}{subsection.7.2}
+\contentsline {subsection}{\numberline {7.3}Labed System}{41}{subsection.7.3}
