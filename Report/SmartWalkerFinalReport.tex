@@ -98,7 +98,7 @@ The header file contains all of the information that applies to multiple files. 
 
 In addition to this information, it includes many of the module or object declarations that are used later on in the programs. These include things like the ledChip declaration. It is important to note that the ledChip and ledChip2 objects that are declared have numbers associated with them. These are the specific I$^2$C addresses that allow them to operate separately from one another. If one wants more information on this specifically, they can look at the led chip driver hookup guide \href{https://learn.sparkfun.com/tutorials/lp55231-breakout-board-hookup-guide/all}{here.} 
 
-Finally, there are several global constants or other important information located in the header. One of the most important is the global \textbf{CARD\_OK}. This global can toggle wether an SD card is detected and allow the system to continue operation regardless of whether one is detected or not. While this is not necessary, If an SD card is not inserted, it is recommended to set this value to 0. Also the names of the states for the state machine are enumerated here, as well as the current state and next state. This allows functions from the button interrupts, for example, to change the value of next state even while it is in a separate file.
+Finally, there are several global constants or other important information located in the header. One of the most important is the global \textbf{CARD\_OK}. This global can toggle wether an SD card is detected and allow the system to continue operation regardless of whether one is detected or not. While this is not necessary, If an SD card is not inserted, it is recommended to set this value to 0. Also the names of the states for the state machine are enumerated here, as well as the current state and next state. This allows functions from the button interrupts, for example, to change the value of next state even while it is in a separate file. The entire header file can be found in Listing~\ref{code:header} on Page~\pageref{code:header}.
 
 \subsection{Main}
 Based on a Blynk Example sketch for the ESP8266 wifi chip on the wifi shield, the main loop of the software function is designed to be as simple as possible. As with all Arduino main functions, there is a \textbf{setup} function and a \textbf{loop} function. The full main code is found in Listing~\ref{code:main} on Page~\pageref{code:main}. 
@@ -169,7 +169,6 @@ void loop()
 
 }
 \end{lstlisting}
-
 
 \subsection{State Machine}
 This state machine is based off of the Activity Diagram shown in Figure %find the figure number and insert the figure 
@@ -246,7 +245,7 @@ The RF sensor and OpenPIR sensor are configured via the functions to do exactly 
 In addition, the buttons are technically sensors, so they have been included in this file. The interrupts are enabled in the setup as well, and then in the callback they set the next state to \textsl{thankYou}. The entire file is found in Listing~\ref{code:SensorFunctions} on Page~\pageref{code:SensorFunctions}
 
 \subsection{LEDs}
-The LEDs are broken up into two files: one that is entirely modular and independent of the LEDs used called \textit{LED\_Drivers.ino} (Listing~\ref{code:LEDDriver})and one that is hardware dependent and called \textit{LED\_Functions.ino} (Listing~\ref{code:LEDFunctions}). The independent file is formatted very similarly to the State Machine Callback, as it requires the same basic functionality. It calls state-specific functions that will do the sequences described above. Then the hardware dependent file goes and implements these. Depending on the time elapsed, the LEDs could be turning on or off, so there are sequence steps that are iterated through using a case statement. A simple example of one is reproduced below in Listing~\ref{ledfunc}. As one can see, depending on the counter value which is static like earlier, the LEDs will either turn on (by specifying a duty cycle of 50 out of 255) or turn off (by specifying a duty cycle of 0) and reset the counter to begin the cycle again. The duty cycle is much less than the maximum to save power, and since that brightness was found to be sufficient in indoor situations. 
+The LEDs are broken up into two files: one that is entirely modular and independent of the LEDs used called \textit{LED\_Drivers.ino} (Listing~\ref{code:LEDDriver})and one that is hardware dependent and called \textit{LED\_Functions.ino} (Listing~\ref{code:LEDFunctions}). The independent file is formatted very similarly to the State Machine Callback, as it requires the same basic functionality. It calls state-specific functions that will do the sequences described above. Then the hardware dependent file goes and implements these. Depending on the time elapsed, the LEDs could be turning on or off, so there are sequence steps that are iterated through using a case statement. A simple example of one is reproduced below in Listing~\ref{code:ledfunc}. As one can see, depending on the counter value which is static like earlier, the LEDs will either turn on (by specifying a duty cycle of 50 out of 255) or turn off (by specifying a duty cycle of 0) and reset the counter to begin the cycle again. The duty cycle is much less than the maximum to save power, and since that brightness was found to be sufficient in indoor situations. 
 
 \begin{lstlisting}[caption={The Strong Reminder LED function}, label={code:ledfunc}]
 void StrongReminderLED(int * counter)
@@ -277,19 +276,31 @@ void StrongReminderLED(int * counter)
 \end{lstlisting}
 
 \subsection{Real Time Clock Module}
+The Real Time Clock Module (RTC Module) is a battery powered oscillator that can continue to hold an accurate time after the system has turned off. It also has a very nice library that works alongside it. The real-time clock has a straightforward setup and then can get a Date string as well as a Time string. The specific functions and how they are used in \textbf{PrintDateandTime()} are found in Listing~\ref{code:SDandRTC} on Page~\pageref{code:SDandRTC}. 
 
 \subsection{Micro SD Card and Data Logging}
-%talk about the way it is recorded. 
+The micro SD card used uses a shifting $\mu$SD sparkfun board that uses Serial Peripheral Interface (SPI) protocols unlike the rest of the boards I$^2$C. It is additionally able to continually check for the presence of an SD card, but also operate without one should the need arise. There is a nice library for this as well available, that was cannibalized to fit the needs of this project. The micro SD card should work directly out of the box, but if it does not then there is searchable documentation to format it appropriately. 
+
+Additionally, since there was not one perfect way to save files, and one years worth of files would have been excessive, we decided to break files into week intervals. Each text file would start on Sunday of a given week of the year and be named the year, the word week, and then the week of the year: \textit{19week12.txt}. This is implemented using the \textbf{PrintDateandTime()} function, which proceeds to put this onto the SD card. This card can then be plugged into most computers using a micro-SD to SD card adapter and read easily. 
+
+One can also use \textbf{PrintDateandTimeVerbose()} For additional information about the specific day, although this is unnecessary. In future iterations, the specific logging and methods used may need to change, so this should act more as a framework than a final solution. The full code is located with the RTC Module code in Listing~\ref{code:SDandRTC} on Page~\pageref{code:SDandRTC}.
 
 \subsection{Future Software Directions}
-% talk about the need for some windowing potentially and a potential bug with the buttons? Maybe switch to polling? 
 
-%take everything else out of the main loop, could solve wifi problem
+As aforementioned in the Blynk Disclaimer is the wifi, while implemented in hardware, was not fully able to be utilized. The ability for the wifi to be connected via a soft access point so that the end user doesn't have to do any coding is also a final product must-have. Additionally, the wifi had data transfer problems, and would freeze up the state machine. Fixing that is a top priority in future endeavors, and there are a couple possible solutions to help this problem:
+\begin{itemize}
+	\item Take other functions out of the main loop
+	\item Extend timing periods for the state machine
+	\item Look into disabling the SPI (SD card) and see if that makes the transfer easier
+	\item Change the buttons from interrupt to polling
+	\item Look into other alternatives to Blynk, which may require more work or an html page
+\end{itemize}
 
+Another issue is the button triggers. Even with a debouncing circuit, there is still a significant amount of noise from the interrupts. Potentially this response could be better debounced by simply polling the levels, since that is the quickest that the information could be acted on. Additionally, freeing up external interrupts, as mentioned, could solve some of the wifi connection problems. 
 %speaker
 
 \section{System Setup Instructions}
-
+% put the libraries of the arduino tab into the arduino documents folder thingy
 \section{Future Improvements}
 
 
@@ -310,8 +321,6 @@ void StrongReminderLED(int * counter)
 \Cpp{The SD card and RTC functionality} {code:SDandRTC} {../ESP8266_Shield_example_minus_connman/SD_save_files2.ino}
 
 \Cpp{The Sensor Functions} {code:SensorFunctions} {../ESP8266_Shield_example_minus_connman/Sensor_Functions.ino}
-
-
 
 \subsection{URL References}
 \begin{itemize}

@@ -59,7 +59,7 @@ int UpperSensorTakeMeasurement() {
   int distance; 
   myDistance_upper.takeMeasurement(); 
   distance = myDistance_upper.getDistance(); 
-  DEBUG.println(distance); 
+  // DEBUG.println(distance); 
   // distance returned on a scale of 0 to 2047
   if(distance < 650) { // empirically determined that it's a proximal signal. 
     return 2;   
@@ -72,5 +72,5 @@ int UpperSensorTakeMeasurement() {
     // no signal detected, or the signal is sufficiently far away
   }
     
-
+  
 }
